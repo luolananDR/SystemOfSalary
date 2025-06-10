@@ -16,6 +16,7 @@
 <head>
     <meta charset="UTF-8">
     <title>家庭成员管理</title>
+
 </head>
 <body>
 <div class="container">
@@ -26,12 +27,12 @@
         <h3>员工信息</h3>
         <p><strong>姓名：</strong><%= staff.getName() %></p>
         <p><strong>员工编号：</strong><%= staff.getStaffCode() %></p>
-        <p><strong>部门：</strong><%= staff.getDepartment() %></p>
+<%--        <p><strong>部门：</strong><%= staff.getDepartment() %></p>--%>
     </div>
 
     <button class="btn btn-add" onclick="document.getElementById('addModal').style.display='block'">添加家庭成员</button>
 
-    <table>
+    <table border="1" cellspacing="0" cellpadding="8">
         <thead>
         <tr>
             <th>姓名</th>
@@ -46,13 +47,13 @@
         %>
         <tr>
             <td><%= member.getName() %></td>
-            <td><%= member.getIdCard().replaceAll("(\\d{4})\\d{10}(\\w{4})", "$1**********$2") %></td>
-            <td><%= member.getRelationship() %></td>
+            <td><%= member.getIdNumber().replaceAll("(\\d{4})\\d{10}(\\w{4})", "$1**********$2") %></td>
+            <td><%= member.getRelation() %></td>
             <td class="action-buttons">
                 <form action="FamilyMemberServlet" method="post" style="display:inline;">
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="memberId" value="<%= member.getId() %>">
-                    <input type="hidden" name="staffId" value="<%= staff.getStaffId() %>">
+                    <input type="hidden" name="staffCode" value="<%= staff.getStaffCode() %>">
                     <button type="submit" class="btn btn-delete" onclick="return confirm('确定要删除家庭成员 <%= member.getName() %> 吗？')">删除</button>
                 </form>
             </td>
@@ -74,22 +75,23 @@
         <h2>添加家庭成员</h2>
         <form action="FamilyMemberServlet" method="post">
             <input type="hidden" name="action" value="add">
-            <input type="hidden" name="staffId" value="<%= staff.getStaffId() %>">
+            <input type="hidden" name="staffCode" value="<%= staff.getStaffCode() %>">
             <div class="form-group">
                 <label for="addName">姓名</label>
                 <input type="text" id="addName" name="name" required>
             </div>
             <div class="form-group">
-                <label for="addIdCard">身份证号</label>
-                <input type="text" id="addIdCard" name="idCard" required pattern="\d{18}">
+                <label for="addIdNumber">身份证号</label>
+                <input type="text" id="addIdNumber" name="idNumber" required pattern="\d{18}">
             </div>
             <div class="form-group">
-                <label for="addRelationship">关系</label>
-                <select id="addRelationship" name="relationship" required>
+                <label for="addRelation">关系</label>
+                <select id="addRelation" name="relation" required>
                     <option value="">-- 请选择关系 --</option>
                     <option value="配偶">配偶</option>
                     <option value="子女">子女</option>
-                    <option value="父母">父母</option>
+                    <option value="父亲">父亲</option>
+                    <option value="母亲">母亲</option>
                     <option value="其他">其他</option>
                 </select>
             </div>

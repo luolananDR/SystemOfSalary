@@ -4,7 +4,6 @@
 <%
     String role = (String) session.getAttribute("roleCode");
     String username = (String) session.getAttribute("username");
-
 %>
 <%--<c:if test="${empty role}">
     <c:redirect url="login.jsp" />
@@ -26,35 +25,35 @@
 
 <div class="menu">
     <!-- 系统管理员权限 -->
-    <c:if test="${role eq 'admin'}">
+<%--    <c:if test="${role eq 'admin'}">--%>
     <button onclick="location.href='userManage.jsp'">用户管理</button>
     <button onclick="location.href='roleManage.jsp'">角色权限配置</button>
-    </c:if>
+<%--    </c:if>--%>
 
     <!-- 人事管理员权限 -->
-    <c:if test="${role eq 'hr' or role eq 'admin'}">
+<%--    <c:if test="${role eq 'hr' or role eq 'admin'}">--%>
         <button onclick="location.href='staffManage.jsp'">人员管理</button>
-    </c:if>
+        <button onclick="location.href='SpecialDedutionManage.jsp'">专项附加扣除</button>
+<%--    </c:if>--%>
 
     <!-- 财务管理员权限 -->
 <%--    <c:if test="${role eq 'finance' or role eq 'admin'}">
     <button onclick="location.href='salaryManage.jsp'">工资管理</button>
-    <button onclick="location.href='deductionManage.jsp'">专项附加扣除</button>
+
     <button onclick="location.href='salaryImport.jsp'">工资导入</button>
     </c:if>--%>
     <button onclick="location.href='SalaryQueryServlet'">工资管理</button>
-    <button onclick="location.href='deductionManage.jsp'">专项附加扣除</button>
     <button onclick="location.href='salaryImport.jsp'">工资导入</button>
 
     <!-- 总经理权限 -->
-    <c:if test="${role eq 'ceo' or role eq 'admin'}">
+<%--    <c:if test="${role eq 'ceo' or role eq 'admin'}">--%>
     <button onclick="location.href='salaryQuery.jsp'">工资查询</button>
-    </c:if>
+<%--    </c:if>--%>
 
     <!-- 审计员权限 -->
-    <c:if test="${role eq 'audit' or role eq 'admin'}">
+<%--    <c:if test="${role eq 'audit' or role eq 'admin'}">--%>
     <button onclick="location.href='logQuery.jsp'">日志审计</button>
-    </c:if>
+<%--    </c:if>--%>
 
     <button onclick="location.href='logout.jsp'">退出登录</button>
 </div>

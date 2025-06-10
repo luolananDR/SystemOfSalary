@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.*;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,5 +127,27 @@ public class SalaryImportServlet extends HttpServlet {
         } catch (Exception e) {
             return null;
         }
+    }
+    private BigDecimal calculateTax(BigDecimal taxableIncome) {
+        BigDecimal tax = BigDecimal.ZERO;
+        double income = taxableIncome.doubleValue();
+
+        if (income <= 36000) {
+            tax = BigDecimal.valueOf(income * 0.03);
+        } else if (income <= 144000) {
+            tax = BigDecimal.valueOf(income * 0.10 - 2520);
+        } else if (income <= 300000) {
+            tax = BigDecimal.valueOf(income * 0.20 - 16920);
+        } else if (income <= 420000) {
+            tax = BigDecimal.valueOf(income * 0.25 - 31920);
+        } else if (income <= 660000) {
+            tax = BigDecimal.valueOf(income * 0.30 - 52920);
+        } else if (income <= 960000) {
+            tax = BigDecimal.valueOf(income * 0.35 - 85920);
+        } else {
+            tax = BigDecimal.valueOf(income * 0.45 - 181920);
+        }
+
+        return tax.setScale(2, RoundingMode.HALF_UP);
     }
 }

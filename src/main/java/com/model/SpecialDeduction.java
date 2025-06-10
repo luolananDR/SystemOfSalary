@@ -5,19 +5,28 @@ import lombok.AllArgsConstructor;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Objects;
+import java.util.stream.Stream;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SpecialDeduction {//专项附加扣除
+public class SpecialDeduction {
     private Integer id;
-    private Integer staffId;
-    private Integer deductionYear;
+    private Integer staffCode;
+    private Date deductionMonth;
     private BigDecimal childEducation;
-    private BigDecimal continuingEducation;
-    private BigDecimal majorDisease;
+    private BigDecimal continueEducation;
     private BigDecimal housingLoanInterest;
     private BigDecimal housingRent;
-    private BigDecimal elderSupport;
-    private BigDecimal infantCare;
+    private BigDecimal elderlySupport;
+    private BigDecimal seriousIllness;
     private Timestamp createdAt;
+
+    public BigDecimal getTotalDeduction() {
+        return Stream.of(
+                childEducation, continueEducation, housingLoanInterest,
+                housingRent, elderlySupport, seriousIllness
+        ).filter(Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 }

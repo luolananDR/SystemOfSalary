@@ -20,4 +20,11 @@ public class SysUser {
     private Boolean isLocked;
     private Timestamp lastPasswordChange;
     private Timestamp createdAt;
+    public UserRole getRole() {
+        return UserRole.fromCode(this.roleId);
+    }
+
+    public void setRole(UserRole role) {
+        this.roleId = role.getCode();
+    }
 }
