@@ -46,7 +46,8 @@
             <td><%= staff.getName() %></td>
             <td><%= staff.getDepartmentId() %></td>
             <td><%= staff.getPosition() %></td>
-            <td><%= staff.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2") %></td>
+            <td><%= staff.getIdNumber() != null ? staff.getIdNumber().replaceAll("(\\d{4})\\d{10}(\\w{4})", "$1**********$2") : ""%></td>
+            <td><%= staff.getPhone() != null ? staff.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2") : "" %></td>
             <td><%= staff.getAddress() %></td>
             <td class="action-buttons">
                 <button class="btn btn-edit" onclick="document.getElementById('editModal').style.display='block'; loadStaffData('<%= staff.getStaffCode() %>')">编辑</button>
@@ -55,7 +56,7 @@
                     <input type="hidden" name="staffId" value="<%= staff.getStaffCode() %>">
                     <button type="submit" class="btn btn-delete" onclick="return confirm('确定要删除员工 <%= staff.getName() %> 吗？')">删除</button>
                 </form>
-                <a href="FamilyMemberServlet?action=list&staffId=<%= staff.getStaffCode() %>" class="btn btn-family">管理家庭</a>
+                <a href="FamilyMemberServlet?action=list&staffCode=<%= staff.getStaffCode() %>" class="btn btn-family">管理家庭</a>
             </td>
         </tr>
         <%
@@ -88,6 +89,10 @@
             <div class="form-group">
                 <label for="addPosition">岗位</label>
                 <input type="text" id="addPosition" name="position" required>
+            </div>
+            <div class="form-group">
+                <label for="addPosition">工号</label>
+                <input type="text" id="addStaffCode" name="staffCode" required>
             </div>
             <div class="form-group">
                 <label for="addIdCard">身份证号</label>

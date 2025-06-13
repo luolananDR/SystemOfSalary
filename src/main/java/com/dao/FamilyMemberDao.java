@@ -9,12 +9,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class FamilyMemberDao extends BaseDao{
-    public List<FamilyMember> getFamilyMembersByStaffId(String staffId) {
+    public List<FamilyMember> getFamilyMembersByStaffCode(String staffCode) {
         List<FamilyMember> familyMembers = null;
         String sql = "SELECT * FROM family_members WHERE staff_code = ?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, staffId);
+            ps.setString(1, staffCode);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 FamilyMember member = new FamilyMember();

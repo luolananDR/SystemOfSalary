@@ -19,7 +19,7 @@ public class StaffServlet extends HttpServlet {
         // 显示所有员工
         List<Staff> staffList = staffDao.getAllStaff();
         request.setAttribute("staffList", staffList);
-        request.getRequestDispatcher("employee_management.jsp").forward(request, response);
+        request.getRequestDispatcher("staffManage.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -31,6 +31,7 @@ public class StaffServlet extends HttpServlet {
             staff.setName(request.getParameter("name"));
             staff.setDepartmentId(Integer.valueOf(request.getParameter("department")));
             staff.setPosition(request.getParameter("position"));
+            staff.setStaffCode(request.getParameter("staffCode"));
             staff.setIdNumber(request.getParameter("idCard"));
             staff.setPhone(request.getParameter("phone"));
             staff.setAddress(request.getParameter("address"));
