@@ -37,11 +37,12 @@ public class FamilyMemberServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         String staffId = request.getParameter("staffId");
+        String staffCode = request.getParameter("staffCode");
 
         if ("add".equals(action)) {
             // 添加新家庭成员
             FamilyMember member = new FamilyMember();
-            member.setStaffId(Integer.valueOf(staffId));
+            member.setStaffCode(Integer.valueOf(staffCode));
             member.setName(request.getParameter("name"));
             member.setIdNumber(request.getParameter("idCard"));
             member.setRelation(request.getParameter("relationship"));
