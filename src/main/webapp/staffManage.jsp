@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, com.example.model.Staff, com.example.model.SysUser" %>
-<%
-    // 权限检查 - 只有HR可以访问此页面
-    SysUser currentUser = (SysUser) session.getAttribute("currentUser");
-    if (currentUser == null || !currentUser.getRole().equals("HR")) {
-        response.sendRedirect("access_denied.jsp");
-        return;
-    }
-%>
+<%@ page import="java.util.List, com.model.Staff, com.model.SysUser" %>
+<%--<%--%>
+<%--    // 权限检查 - 只有HR可以访问此页面--%>
+<%--    SysUser currentUser = (SysUser) session.getAttribute("currentUser");--%>
+<%--    if (currentUser == null || !currentUser.getRole().equals("HR")) {--%>
+<%--        response.sendRedirect("access_denied.jsp");--%>
+<%--        return;--%>
+<%--    }--%>
+<%--%>--%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,7 +17,7 @@
 <body>
 <div class="container">
     <h1>员工管理系统</h1>
-    <p>欢迎, <%= currentUser.getUsername() %> (HR)</p>
+<%--    <p>欢迎, <%= currentUser.getUsername() %> (HR)</p>--%>
 
     <button class="btn btn-add" onclick="document.getElementById('addModal').style.display='block'">添加新员工</button>
 
@@ -42,21 +42,20 @@
                 for (Staff staff : staffList) {
         %>
         <tr>
-            <td><%= staff.getStaffId() %></td>
+            <td><%= staff.getStaffCode() %></td>
             <td><%= staff.getName() %></td>
-            <td><%= staff.getDepartment() %></td>
+            <td><%= staff.getDepartmentId() %></td>
             <td><%= staff.getPosition() %></td>
-            <td><%= staff.getIdCard().replaceAll("(\\d{4})\\d{10}(\\w{4})", "$1**********$2") %></td>
             <td><%= staff.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2") %></td>
             <td><%= staff.getAddress() %></td>
             <td class="action-buttons">
-                <button class="btn btn-edit" onclick="document.getElementById('editModal').style.display='block'; loadStaffData('<%= staff.getStaffId() %>')">编辑</button>
+                <button class="btn btn-edit" onclick="document.getElementById('editModal').style.display='block'; loadStaffData('<%= staff.getStaffCode() %>')">编辑</button>
                 <form action="StaffServlet" method="post" style="display:inline;">
                     <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="staffId" value="<%= staff.getStaffId() %>">
+                    <input type="hidden" name="staffId" value="<%= staff.getStaffCode() %>">
                     <button type="submit" class="btn btn-delete" onclick="return confirm('确定要删除员工 <%= staff.getName() %> 吗？')">删除</button>
                 </form>
-                <a href="FamilyMemberServlet?action=list&staffId=<%= staff.getStaffId() %>" class="btn btn-family">管理家庭</a>
+                <a href="FamilyMemberServlet?action=list&staffId=<%= staff.getStaffCode() %>" class="btn btn-family">管理家庭</a>
             </td>
         </tr>
         <%
