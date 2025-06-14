@@ -1,7 +1,6 @@
 package com.dao;
 
 import com.model.Staff;
-import com.filter.decryptSM4;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StaffDao extends BaseDao{
-    decryptSM4 sm4 = new decryptSM4();
-
     public Staff getStaffById(String staffId) {
         Staff staff = null;
         String sql = "SELECT * FROM staff WHERE id = ?";
@@ -28,9 +25,9 @@ public class StaffDao extends BaseDao{
                 staff.setDepartmentId(Integer.valueOf(rs.getString("department_id")));
                 staff.setPosition(rs.getString("position"));
                 staff.setTitle(rs.getString("title"));
-                staff.setIdNumber(sm4.decryptSM4(rs.getString("idNumber")));
-                staff.setPhone(sm4.decryptSM4(rs.getString("phone")));
-                staff.setAddress(sm4.decryptSM4(rs.getString("address")));
+                staff.setIdNumber(rs.getString("id_number"));
+                staff.setPhone(rs.getString("phone"));
+                staff.setAddress(rs.getString("address"));
                 staff.setCreatedAt(rs.getTimestamp("created_at"));
             }
         } catch (Exception e) {
@@ -56,9 +53,9 @@ public class StaffDao extends BaseDao{
                 staff.setDepartmentId(Integer.valueOf(rs.getString("department_id")));
                 staff.setPosition(rs.getString("position"));
                 staff.setTitle(rs.getString("title"));
-                staff.setIdNumber(sm4.decryptSM4(rs.getString("idNumber")));
-                staff.setPhone(sm4.decryptSM4(rs.getString("phone")));
-                staff.setAddress(sm4.decryptSM4(rs.getString("address")));
+                staff.setIdNumber(rs.getString("id_number"));
+                staff.setPhone(rs.getString("phone"));
+                staff.setAddress(rs.getString("address"));
                 staff.setCreatedAt(rs.getTimestamp("created_at"));
             }
         } catch (Exception e) {
