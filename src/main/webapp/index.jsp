@@ -1,13 +1,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.*" %>
-<%--<%--%>
-<%--    String role = (String) session.getAttribute("roleCode");--%>
-<%--    String username = (String) session.getAttribute("username");--%>
-<%--%>--%>
-<%--<c:if test="${empty role}">
+<%@ page import="com.model.UserRole" %>
+<%
+    UserRole role = (UserRole) session.getAttribute("userRole");
+    String username = (String) session.getAttribute("username");
+    request.setAttribute("role", role);
+    request.setAttribute("username", username);
+%>
+<c:if test="${empty role}">
     <c:redirect url="login.jsp" />
-</c:if>--%>
+</c:if>
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,37 +28,37 @@
 
 <div class="menu">
     <!-- 系统管理员权限 -->
-<%--    <c:if test="${role eq 'admin'}">--%>
+    <c:if test="${role == 'admin'}">
     <button onclick="location.href='userManage.jsp'">用户管理</button>
     <button onclick="location.href='roleManage.jsp'">角色权限配置</button>
-<%--    </c:if>--%>
+    </c:if>
 
     <!-- 人事管理员权限 -->
-<%--    <c:if test="${role eq 'hr' or role eq 'admin'}">--%>
-        <button onclick="location.href='StaffServlet'">人员管理</button>
+    <c:if test="${role == 'admin' or role eq 'hr'}">
+        <button onclick="location.href='staffManage.jsp'">人员管理</button>
         <button onclick="location.href='SpecialDedutionManage.jsp'">专项附加扣除</button>
-<%--    </c:if>--%>
+    </c:if>
 
     <!-- 财务管理员权限 -->
-<%--    <c:if test="${role eq 'finance' or role eq 'admin'}">
-    <button onclick="location.href='salaryManage.jsp'">工资管理</button>
-
-    <button onclick="location.href='salaryImport.jsp'">工资导入</button>
-    </c:if>--%>
+     <c:if test="${role == 'admin' or role == 'finance'}">
     <button onclick="location.href='SalaryQueryServlet'">工资管理</button>
     <button onclick="location.href='salaryImport.jsp'">工资导入</button>
+    </c:if>
+
 
     <!-- 总经理权限 -->
-<%--    <c:if test="${role eq 'ceo' or role eq 'admin'}">--%>
+    <c:if test="${role == 'ceo' or role =='admin'}">
     <button onclick="location.href='salaryQuery.jsp'">工资查询</button>
-<%--    </c:if>--%>
+    </c:if>
 
     <!-- 审计员权限 -->
-<%--    <c:if test="${role eq 'audit' or role eq 'admin'}">--%>
+    <c:if test="${role =='audit' or role =='admin'}">
     <button onclick="location.href='logQuery.jsp'">日志审计</button>
-<%--    </c:if>--%>
-
-    <button onclick="location.href='logout.jsp'">退出登录</button>
+    </c:if>
+    <c:if test="${role == 'unauthorized'}">
+        <p>您没有权限访问此系统，请联系管理员。</p>
+    </c:if>
+    <button onclick="location.href='login.jsp'">退出登录</button>
 </div>
 
 </body>

@@ -22,27 +22,27 @@ public class FamilyMemberServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        String staffCode = request.getParameter("staffCode");
 
         if ("list".equals(action)) {
             // 显示家庭成员列表
-            Staff staff = staffDao.getStaffByStaffCode(staffCode);
-            List<FamilyMember> familyMembers = familyMemberDao.getFamilyMembersByStaffCode(staffCode);
+            String staffId = request.getParameter("staffId");
+            Staff staff = staffDao.getStaffById(staffId);
+            List<FamilyMember> familyMembers = familyMemberDao.getFamilyMembersByStaffCode(staffId);
 
             request.setAttribute("staff", staff);
             request.setAttribute("familyMembers", familyMembers);
-            request.getRequestDispatcher("familyManage.jsp").forward(request, response);
+            request.getRequestDispatcher("family_member_management.jsp").forward(request, response);
         }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        String staffCode = request.getParameter("staffCode");
+        String staffId = request.getParameter("staffId");
 
         if ("add".equals(action)) {
             // 添加新家庭成员
             FamilyMember member = new FamilyMember();
-            member.setStaffCode(Integer.valueOf(staffCode));
+            member.setStaffCode(Integer.valueOf(staffId));
             member.setName(request.getParameter("name"));
             member.setIdNumber(request.getParameter("idNumber"));
             member.setRelation(request.getParameter("relation"));
@@ -59,6 +59,6 @@ public class FamilyMemberServlet extends HttpServlet {
             familyMemberDao.deleteFamilyMember(memberId);
         }
 
-        response.sendRedirect("FamilyMemberServlet?action=list&staffCode=" + staffCode);
+        response.sendRedirect("FamilyMemberServlet?action=list&staffId=" + staffId);
     }
 }

@@ -128,7 +128,6 @@
                 <legend><strong>扣除项目</strong></legend>
                 社保：<br><input type="number" name="socialInsurance" step="0.01" /><br>
                 公积金：<br><input type="number" name="housingFund" step="0.01" /><br>
-                个税：<br><input type="number" name="personalIncomeTax" step="0.01" /><br>
                 请假扣款：<br><input type="number" name="leaveDeduction" step="0.01" />
             </fieldset>
             <input type="submit" value="新增" />

@@ -1,7 +1,14 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: lenovo
+  Date: 2025/6/12
+  Time: 14:24
+  To change this template use File | Settings | File Templates.
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>登录 - 人员工资管理系统</title>
+    <title>更改密码</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -74,14 +81,18 @@
 </head>
 <body>
 <div class="form-container">
-    <h2>系统登录</h2>
-    <form action="LoginServlet" method="post">
-        <label>用户名：</label>
-        <input type="text" name="username" required>
-        <label>密码：</label>
-        <input type="password" name="password" required>
-        <a href="register.jsp">没有账户？点击注册</a><br><br>
-        <input type="submit" value="登录">
+    <h2>修改密码</h2>
+    <form action="ChangePasswordServlet" method="post">
+        <label for="oldPassword">原密码：</label>
+        <input type="password" name="oldPassword" id="oldPassword" required>
+
+        <label for="newPassword">新密码：</label>
+        <input type="password" name="newPassword" id="newPassword" required>
+
+        <label for="confirmPassword">确认新密码：</label>
+        <input type="password" name="confirmPassword" id="confirmPassword" required>
+
+        <button type="submit" class="button">提交修改</button>
     </form>
     <c:if test="${not empty errorMessage}">
         <p style="color:red">${errorMessage}</p>
@@ -89,15 +100,29 @@
     <c:if test="${not empty successMessage}">
         <p style="color:green">${successMessage}</p>
     </c:if>
-
-</div>
 <script>
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("timeout") === "true") {
-        alert("您已超过30分钟未操作，请重新登录。");
-        // 清除 URL 参数
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
-</script>
+        // 简单的表单验证
+        document.querySelector('form').addEventListener('submit', function(event) {
+            const password = document.querySelector('input[name="newPassword"]').value;
+            const confirmPassword = document.querySelector('input[name="confirmPassword"]').value;
+            const oldpassword =document.querySelector('input[name="oldPassword"]').value;
+            if (password !== confirmPassword) {
+                event.preventDefault();
+                alert("密码和确认密码不一致！");
+            }
+            //密码校验，至少8位包含数字，大小写字母和特殊字符
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!passwordRegex.test(password)) {
+                event.preventDefault();
+                alert("密码必须至少8位，包含数字，大小写字母和特殊字符！");
+            }
+            //新旧密码不能相同
+            if(password==oldpassword){
+                alert("新旧密码不能相同");
+            }
+        });
+
+ </script>
+</div>
 </body>
 </html>

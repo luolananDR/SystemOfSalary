@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 public class SysUser {
     private Integer id;
     private String username;
-    private String passwordHash;
+    private String password;
     private String realName;
     private String phone;
     private String idNumber;
@@ -20,6 +20,9 @@ public class SysUser {
     private Boolean isLocked;
     private Timestamp lastPasswordChange;
     private Timestamp createdAt;
+    private Integer failedLoginCount;               // 登录失败次数
+    private Timestamp lastFailedLoginTime;          // 最近一次登录失败时间
+    private Timestamp accountLockedUntil;           // 自动解锁时间
     public UserRole getRole() {
         return UserRole.fromCode(this.roleId);
     }

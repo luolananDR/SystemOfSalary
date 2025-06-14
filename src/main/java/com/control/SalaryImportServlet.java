@@ -1,6 +1,8 @@
 package com.control;
 import com.dao.SalaryRecordDao;
+import com.dao.SpecialDeductionDao;
 import com.model.SalaryRecord;
+import com.model.SpecialDeduction;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.*;
@@ -59,12 +61,17 @@ public class SalaryImportServlet extends HttpServlet {
         List<SalaryRecord> list=new ArrayList<>();
         Workbook workbook = WorkbookFactory.create(inputStream);//创建 Workbook 对象
         Sheet sheet=workbook.getSheetAt(0);//获取第一个工作表
-        for(int i=1;i<=sheet.getLastRowNum();i++){
-            Row row= sheet.getRow(i);
-            if(row==null)continue;
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            if (row == null) continue;
+
             SalaryRecord record = new SalaryRecord();
-            record.setStaffCode(getInteger(row.getCell(0)));
-            record.setSalaryMonth(Date.valueOf(row.getCell(1).getStringCellValue() + "-01"));//yyyy-MM -> yyyy-MM-01
+            Integer staffCode = getInteger(row.getCell(0));
+            String monthStr = row.getCell(1).getStringCellValue();
+            Date salaryMonth = Date.valueOf(monthStr + "-01");
+
+            record.setStaffCode(staffCode);
+            record.setSalaryMonth(salaryMonth);
             record.setBaseSalary(getDecimal(row.getCell(2)));
             record.setPositionAllowance(getDecimal(row.getCell(3)));
             record.setLunchAllowance(getDecimal(row.getCell(4)));
@@ -72,20 +79,46 @@ public class SalaryImportServlet extends HttpServlet {
             record.setFullAttendanceBonus(getDecimal(row.getCell(6)));
             record.setSocialInsurance(getDecimal(row.getCell(7)));
             record.setHousingFund(getDecimal(row.getCell(8)));
-            record.setPersonalIncomeTax(getDecimal(row.getCell(9)));
-            record.setLeaveDeduction(getDecimal(row.getCell(10)));
-            BigDecimal actual = record.getBaseSalary()
+            record.setLeaveDeduction(getDecimal(row.getCell(9)));
+
+            // 应发工资
+            BigDecimal totalSalary = record.getBaseSalary()
                     .add(record.getPositionAllowance())
                     .add(record.getLunchAllowance())
                     .add(record.getOvertimePay())
-                    .add(record.getFullAttendanceBonus())
+                    .add(record.getFullAttendanceBonus());
+
+            // 获取专项附加扣除
+            SpecialDeductionDao specialDeductionDao = new SpecialDeductionDao();
+            SpecialDeduction deduction = specialDeductionDao.getspecialDeductionBystaffCode(staffCode);
+            BigDecimal specialDeduction = deduction.getTotalDeduction();
+
+            // 应纳税所得额 = 应发工资 - 社保 - 公积金 - 起征点(5000) - 专项附加扣除
+            BigDecimal taxableIncome = totalSalary
                     .subtract(record.getSocialInsurance())
                     .subtract(record.getHousingFund())
-                    .subtract(record.getPersonalIncomeTax())
+                    .subtract(BigDecimal.valueOf(5000))
+                    .subtract(specialDeduction);
+
+            if (taxableIncome.compareTo(BigDecimal.ZERO) < 0) {
+                taxableIncome = BigDecimal.ZERO;
+            }
+
+            // 计算个税
+            BigDecimal incomeTax = calculateMonthlyTax(taxableIncome);
+            record.setPersonalIncomeTax(incomeTax);
+
+            // 实发工资 = 应发工资 - 社保 - 公积金 - 个税 - 请假扣款
+            BigDecimal actualSalary = totalSalary
+                    .subtract(record.getSocialInsurance())
+                    .subtract(record.getHousingFund())
+                    .subtract(incomeTax)
                     .subtract(record.getLeaveDeduction());
-            record.setActualSalary(actual);
+
+            record.setActualSalary(actualSalary);
             list.add(record);
         }
+
         workbook.close();
         return list;
     }
@@ -128,24 +161,24 @@ public class SalaryImportServlet extends HttpServlet {
             return null;
         }
     }
-    private BigDecimal calculateTax(BigDecimal taxableIncome) {
-        BigDecimal tax = BigDecimal.ZERO;
+    private BigDecimal calculateMonthlyTax(BigDecimal taxableIncome) {
+        BigDecimal tax;
         double income = taxableIncome.doubleValue();
 
-        if (income <= 36000) {
+        if (income <= 3000) {
             tax = BigDecimal.valueOf(income * 0.03);
-        } else if (income <= 144000) {
-            tax = BigDecimal.valueOf(income * 0.10 - 2520);
-        } else if (income <= 300000) {
-            tax = BigDecimal.valueOf(income * 0.20 - 16920);
-        } else if (income <= 420000) {
-            tax = BigDecimal.valueOf(income * 0.25 - 31920);
-        } else if (income <= 660000) {
-            tax = BigDecimal.valueOf(income * 0.30 - 52920);
-        } else if (income <= 960000) {
-            tax = BigDecimal.valueOf(income * 0.35 - 85920);
+        } else if (income <= 12000) {
+            tax = BigDecimal.valueOf(income * 0.10 - 210);
+        } else if (income <= 25000) {
+            tax = BigDecimal.valueOf(income * 0.20 - 1410);
+        } else if (income <= 35000) {
+            tax = BigDecimal.valueOf(income * 0.25 - 2660);
+        } else if (income <= 55000) {
+            tax = BigDecimal.valueOf(income * 0.30 - 4420);
+        } else if (income <= 80000) {
+            tax = BigDecimal.valueOf(income * 0.35 - 7120);
         } else {
-            tax = BigDecimal.valueOf(income * 0.45 - 181920);
+            tax = BigDecimal.valueOf(income * 0.45 - 15320);
         }
 
         return tax.setScale(2, RoundingMode.HALF_UP);
