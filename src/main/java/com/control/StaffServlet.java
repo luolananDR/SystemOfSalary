@@ -34,9 +34,9 @@ public class StaffServlet extends HttpServlet {
             staff.setDepartmentId(Integer.valueOf(request.getParameter("department")));
             staff.setPosition(request.getParameter("position"));
             staff.setStaffCode(request.getParameter("staffCode"));
-            staff.setIdNumber(request.getParameter("idCard"));
-            staff.setPhone(request.getParameter("phone"));
-            staff.setAddress(request.getParameter("address"));
+            staff.setIdNumber((String) request.getAttribute("encrypted_idNumber"));
+            staff.setPhone((String) request.getAttribute("encrypted_phone"));
+            staff.setAddress((String) request.getAttribute("encrypted_address"));
 
             staffDao.addStaff(staff);
 
@@ -47,9 +47,9 @@ public class StaffServlet extends HttpServlet {
             staff.setName(request.getParameter("name"));
             staff.setDepartmentId(Integer.valueOf(request.getParameter("department")));
             staff.setPosition(request.getParameter("position"));
-            staff.setIdNumber(request.getParameter("idCard"));
-            staff.setPhone(request.getParameter("phone"));
-            staff.setAddress(request.getParameter("address"));
+            staff.setIdNumber((String) request.getAttribute("encrypted_idNumber"));
+            staff.setPhone((String) request.getAttribute("encrypted_phone"));
+            staff.setAddress((String) request.getAttribute("encrypted_address"));
 
             staffDao.updateStaff(staff);
 

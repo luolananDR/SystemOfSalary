@@ -95,8 +95,8 @@
                 <input type="text" id="addStaffCode" name="staffCode" required>
             </div>
             <div class="form-group">
-                <label for="addIdCard">身份证号</label>
-                <input type="text" id="addIdCard" name="idCard" required pattern="\d{18}">
+                <label for="addIdNumber">身份证号</label>
+                <input type="text" id="addIdNumber" name="idNumber" required pattern="\d{18}">
             </div>
             <div class="form-group">
                 <label for="addPhone">手机号</label>

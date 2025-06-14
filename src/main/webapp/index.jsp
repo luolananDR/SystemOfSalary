@@ -35,7 +35,7 @@
 
     <!-- 人事管理员权限 -->
     <c:if test="${role == 'admin' or role eq 'hr'}">
-        <button onclick="location.href='staffManage.jsp'">人员管理</button>
+        <button onclick="location.href='StaffServlet'">人员管理</button>
         <button onclick="location.href='SpecialDedutionManage.jsp'">专项附加扣除</button>
     </c:if>
 
