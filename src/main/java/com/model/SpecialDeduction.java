@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 public class SpecialDeduction {
     private Integer id;
     private Integer staffCode;
-    private Date deductionMonth;
     private BigDecimal childEducation;
     private BigDecimal continueEducation;
     private BigDecimal housingLoanInterest;
