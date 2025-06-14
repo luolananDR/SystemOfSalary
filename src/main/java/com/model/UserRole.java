@@ -7,7 +7,7 @@ public enum UserRole {
         finance(2),    // 财务管理员
         ceo(3),  // 总经理
         admin(4),        // 系统管理员
-         audit(5),         // 审计员
+        audit(5),         // 审计员
     unauthorized(-1);   // 无权限
         private final int code;
 
