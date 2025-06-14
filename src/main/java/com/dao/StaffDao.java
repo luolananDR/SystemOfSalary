@@ -29,12 +29,35 @@ public class StaffDao extends BaseDao{
         return staff;
     }
 
+    public Staff getStaffByStaffCode(String staffCode) {
+        Staff staff = null;
+        String sql = "SELECT * FROM staff WHERE staff_code = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, staffCode);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                staff = new Staff();
+                staff.setId(rs.getInt("id"));
+                staff.setStaffCode(rs.getString("staff_code"));
+                staff.setName(rs.getString("name"));
+                staff.setDepartmentId(rs.getInt("department_id"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return staff;
+    }
+
     public void addStaff(Staff staff) {
-        String sql = "INSERT INTO staff (name, department_id) VALUES (?, ?)";
+        String sql = "INSERT INTO staff (name, department_id, staff_code) VALUES (?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, staff.getName());
             ps.setInt(2, staff.getDepartmentId());
+            ps.setString(3, staff.getStaffCode());
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,6 +97,7 @@ public class StaffDao extends BaseDao{
             while (rs.next()) {
                 Staff staff = new Staff();
                 staff.setId(rs.getInt("id"));
+                staff.setStaffCode(rs.getString("staff_code"));
                 staff.setName(rs.getString("name"));
                 staff.setDepartmentId(Integer.valueOf(rs.getString("department_id")));
                 staffList.add(staff);

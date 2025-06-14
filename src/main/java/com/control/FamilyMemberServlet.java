@@ -21,22 +21,21 @@ public class FamilyMemberServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
+        String staffCode = request.getParameter("staffCode");
 
         if ("list".equals(action)) {
             // 显示家庭成员列表
-            String staffId = request.getParameter("staffId");
-            Staff staff = staffDao.getStaffById(staffId);
-            List<FamilyMember> familyMembers = familyMemberDao.getFamilyMembersByStaffId(staffId);
+            Staff staff = staffDao.getStaffByStaffCode(staffCode);
+            List<FamilyMember> familyMembers = familyMemberDao.getFamilyMembersByStaffCode(staffCode);
 
             request.setAttribute("staff", staff);
             request.setAttribute("familyMembers", familyMembers);
-            request.getRequestDispatcher("family_member_management.jsp").forward(request, response);
+            request.getRequestDispatcher("familyManage.jsp").forward(request, response);
         }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        String staffId = request.getParameter("staffId");
         String staffCode = request.getParameter("staffCode");
 
         if ("add".equals(action)) {
@@ -55,6 +54,6 @@ public class FamilyMemberServlet extends HttpServlet {
             familyMemberDao.deleteFamilyMember(memberId);
         }
 
-        response.sendRedirect("FamilyMemberServlet?action=list&staffId=" + staffId);
+        response.sendRedirect("FamilyMemberServlet?action=list&staffCode=" + staffCode);
     }
 }
