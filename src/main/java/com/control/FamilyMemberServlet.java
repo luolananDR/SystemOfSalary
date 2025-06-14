@@ -1,6 +1,7 @@
 package com.control;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.List;
 
 import com.dao.FamilyMemberDao;
@@ -43,9 +44,13 @@ public class FamilyMemberServlet extends HttpServlet {
             FamilyMember member = new FamilyMember();
             member.setStaffCode(Integer.valueOf(staffCode));
             member.setName(request.getParameter("name"));
-            member.setIdNumber(request.getParameter("idCard"));
-            member.setRelation(request.getParameter("relationship"));
-
+            member.setIdNumber(request.getParameter("idNumber"));
+            member.setRelation(request.getParameter("relation"));
+            member.setBirthDate(Date.valueOf(request.getParameter("birthDate")));
+            member.setIsStudent(Boolean.valueOf(request.getParameter("isStudent")));
+            member.setIsRenting(Boolean.valueOf(request.getParameter("isRenting")));
+            member.setHasMortgage(Boolean.valueOf(request.getParameter("hasMortgage")));
+            member.setIsMajorDisease(Boolean.valueOf(request.getParameter("isMajorDisease")));
             familyMemberDao.addFamilyMember(member);
 
         } else if ("delete".equals(action)) {

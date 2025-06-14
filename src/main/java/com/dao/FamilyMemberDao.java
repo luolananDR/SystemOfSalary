@@ -6,12 +6,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FamilyMemberDao extends BaseDao{
     public List<FamilyMember> getFamilyMembersByStaffCode(String staffCode) {
-        List<FamilyMember> familyMembers = null;
-        String sql = "SELECT * FROM family_members WHERE staff_code = ?";
+        List<FamilyMember> familyMembers = new ArrayList<>();
+        String sql = "SELECT * FROM family_member WHERE staff_code = ?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, staffCode);
@@ -38,7 +39,7 @@ public class FamilyMemberDao extends BaseDao{
     }
 
     public void addFamilyMember(FamilyMember member) {
-        String sql = "INSERT INTO family_members (staff_code, name, relation, id_number, birth_date, is_student, has_mortgage, is_renting, is_major_disease, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+        String sql = "INSERT INTO family_member (staff_code, name, relation, id_number, birth_date, is_student, has_mortgage, is_renting, is_major_disease, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, member.getStaffCode());
@@ -57,7 +58,7 @@ public class FamilyMemberDao extends BaseDao{
     }
 
     public void deleteFamilyMember(String memberId) {
-        String sql = "DELETE FROM family_members WHERE id = ?";
+        String sql = "DELETE FROM family_member WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, memberId);

@@ -1,10 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.*" %>
-<%
-    String role = (String) session.getAttribute("roleCode");
-    String username = (String) session.getAttribute("username");
-%>
+<%--<%--%>
+<%--    String role = (String) session.getAttribute("roleCode");--%>
+<%--    String username = (String) session.getAttribute("username");--%>
+<%--%>--%>
 <%--<c:if test="${empty role}">
     <c:redirect url="login.jsp" />
 </c:if>--%>
@@ -32,7 +32,7 @@
 
     <!-- 人事管理员权限 -->
 <%--    <c:if test="${role eq 'hr' or role eq 'admin'}">--%>
-        <button onclick="location.href='staffManage.jsp'">人员管理</button>
+        <button onclick="location.href='StaffServlet'">人员管理</button>
         <button onclick="location.href='SpecialDedutionManage.jsp'">专项附加扣除</button>
 <%--    </c:if>--%>
 

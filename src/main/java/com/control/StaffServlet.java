@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.dao.StaffDao;
 import com.model.Staff;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,7 +20,8 @@ public class StaffServlet extends HttpServlet {
         // 显示所有员工
         List<Staff> staffList = staffDao.getAllStaff();
         request.setAttribute("staffList", staffList);
-        request.getRequestDispatcher("staffManage.jsp").forward(request, response);
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/staffManage.jsp");
+        rd.forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
