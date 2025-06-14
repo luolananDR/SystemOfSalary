@@ -30,12 +30,12 @@ public class SessionTimeoutFilter implements Filter {
         String uri = req.getRequestURI();
 
         // 排除登录页面、静态资源等
-        if (uri.contains("login.jsp") || uri.contains("LoginServlet")|| uri.contains("RegisterServlet") || uri.contains("ChangePasswordServlet")) {
+        if (uri.contains("login.jsp") || uri.contains("LoginServlet")|| uri.contains("RegisterServlet") || uri.contains("ChangePasswordServlet")|| uri.contains("register.jsp")) {
             chain.doFilter(request, response);
             return;
         }
 
-        if (session == null || session.getAttribute("username") == null) {
+        if (session == null || session.getAttribute("username") == null ) {
             // 未登录
             res.sendRedirect(req.getContextPath() + "/login.jsp");
             return;

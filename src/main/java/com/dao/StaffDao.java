@@ -21,7 +21,14 @@ public class StaffDao extends BaseDao{
                 staff = new Staff();
                 staff.setId(rs.getInt("id"));
                 staff.setName(rs.getString("name"));
+                staff.setStaffCode(rs.getString("staff_code"));
                 staff.setDepartmentId(Integer.valueOf(rs.getString("department_id")));
+                staff.setPosition(rs.getString("position"));
+                staff.setTitle(rs.getString("title"));
+                staff.setIdNumber(rs.getString("id_number"));
+                staff.setPhone(rs.getString("phone"));
+                staff.setAddress(rs.getString("address"));
+                staff.setCreatedAt(rs.getTimestamp("created_at"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,9 +48,15 @@ public class StaffDao extends BaseDao{
             if (rs.next()) {
                 staff = new Staff();
                 staff.setId(rs.getInt("id"));
-                staff.setStaffCode(rs.getString("staff_code"));
                 staff.setName(rs.getString("name"));
-                staff.setDepartmentId(rs.getInt("department_id"));
+                staff.setStaffCode(rs.getString("staff_code"));
+                staff.setDepartmentId(Integer.valueOf(rs.getString("department_id")));
+                staff.setPosition(rs.getString("position"));
+                staff.setTitle(rs.getString("title"));
+                staff.setIdNumber(rs.getString("id_number"));
+                staff.setPhone(rs.getString("phone"));
+                staff.setAddress(rs.getString("address"));
+                staff.setCreatedAt(rs.getTimestamp("created_at"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,12 +65,17 @@ public class StaffDao extends BaseDao{
     }
 
     public void addStaff(Staff staff) {
-        String sql = "INSERT INTO staff (name, department_id, staff_code) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO staff (staff_code,name,department_id,position,title,id_number,phone,address,created_at) VALUES (?, ?, ?,?,?,?,?,?,now())";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, staff.getName());
-            ps.setInt(2, staff.getDepartmentId());
-            ps.setString(3, staff.getStaffCode());
+            ps.setString(1, staff.getStaffCode());
+            ps.setString(2, staff.getName());
+            ps.setInt(3, staff.getDepartmentId());
+            ps.setString(4, staff.getPosition());
+            ps.setString(5, staff.getTitle());
+            ps.setString(6, staff.getIdNumber());
+            ps.setString(7, staff.getPhone());
+            ps.setString(8, staff.getAddress());
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,9 +115,15 @@ public class StaffDao extends BaseDao{
             while (rs.next()) {
                 Staff staff = new Staff();
                 staff.setId(rs.getInt("id"));
-                staff.setStaffCode(rs.getString("staff_code"));
                 staff.setName(rs.getString("name"));
+                staff.setStaffCode(rs.getString("staff_code"));
                 staff.setDepartmentId(Integer.valueOf(rs.getString("department_id")));
+                staff.setPosition(rs.getString("position"));
+                staff.setTitle(rs.getString("title"));
+                staff.setIdNumber(rs.getString("id_number"));
+                staff.setPhone(rs.getString("phone"));
+                staff.setAddress(rs.getString("address"));
+                staff.setCreatedAt(rs.getTimestamp("created_at"));
                 staffList.add(staff);
             }
         } catch (Exception e) {
@@ -119,7 +143,14 @@ public class StaffDao extends BaseDao{
                 staff = new Staff();
                 staff.setId(rs.getInt("id"));
                 staff.setName(rs.getString("name"));
+                staff.setStaffCode(rs.getString("staff_code"));
                 staff.setDepartmentId(Integer.valueOf(rs.getString("department_id")));
+                staff.setPosition(rs.getString("position"));
+                staff.setTitle(rs.getString("title"));
+                staff.setIdNumber(rs.getString("id_number"));
+                staff.setPhone(rs.getString("phone"));
+                staff.setAddress(rs.getString("address"));
+                staff.setCreatedAt(rs.getTimestamp("created_at"));
             }
         } catch (Exception e) {
             e.printStackTrace();

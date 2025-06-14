@@ -42,7 +42,6 @@
     <!-- 财务管理员权限 -->
      <c:if test="${role == 'admin' or role == 'finance'}">
     <button onclick="location.href='SalaryQueryServlet'">工资管理</button>
-
     <button onclick="location.href='salaryImport.jsp'">工资导入</button>
     </c:if>
 
@@ -61,7 +60,6 @@
     </c:if>
     <button onclick="location.href='login.jsp'">退出登录</button>
 </div>
-
 
 </body>
 </html>

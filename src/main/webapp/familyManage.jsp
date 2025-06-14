@@ -2,11 +2,11 @@
 <%@ page import="java.util.List, com.model.FamilyMember, com.model.Staff, com.model.SysUser" %>
 <%
     // 权限检查 - 只有HR可以访问此页面
-    SysUser currentUser = (SysUser) session.getAttribute("currentUser");
-    if (currentUser == null || !currentUser.getRole().equals("hr")) {
-        response.sendRedirect("access_denied.jsp");
-        return;
-    }
+//    SysUser currentUser = (SysUser) session.getAttribute("currentUser");
+//    if (currentUser == null || !currentUser.getRole().equals("hr")) {
+//        response.sendRedirect("access_denied.jsp");
+//        return;
+//    }
 
     Staff staff = (Staff) request.getAttribute("staff");
     List<FamilyMember> familyMembers = (List<FamilyMember>) request.getAttribute("familyMembers");
@@ -95,9 +95,45 @@
                     <option value="其他">其他</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="addBirthDate">出生日期:</label>
+                <input type="date" id="addBirthDate" name="birthDate" required>
+            </div>
+            <div class="form-group">
+                <label for="addIsStudent">是否为学生</label>
+                <select id="addIsStudent" name="isStudent" required>
+                    <option value="">-- 请选择 --</option>
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="addIsRent">是否租房</label>
+                <select id="addIsRent" name="isRent" required>
+                    <option value="">-- 请选择 --</option>
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="addHasMortgage">是否有房贷</label>
+                <select id="addHasMortgage" name="hasMortgage" required>
+                    <option value="">-- 请选择 --</option>
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="addIsMajorDisease">是否患有重大疾病</label>
+                <select id="addIsMajorDisease" name="isMajorDisease" required>
+                    <option value="">-- 请选择 --</option>
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select>
+            </div>
             <div class="form-actions">
                 <button type="button" class="btn" onclick="document.getElementById('addModal').style.display='none'">取消</button>
-                <button type="submit" class="btn btn-add">保存</button>
+                <button type="submit" class="btn btn-add" onclick="">保存</button>
             </div>
         </form>
     </div>
@@ -112,6 +148,8 @@
             document.getElementById('addModal').style.display = 'none';
         }
     }
+
+    console.log()
 </script>
 
 <style>
