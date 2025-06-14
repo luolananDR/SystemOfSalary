@@ -58,6 +58,6 @@ public class FamilyMemberServlet extends HttpServlet {
             familyMemberDao.deleteFamilyMember(memberId);
         }
 
-        response.sendRedirect("FamilyMemberServlet?action=list&staffId=" +staffCode);
+        response.sendRedirect("FamilyMemberServlet?action=list&staffCode=" +staffCode);
     }
 }
