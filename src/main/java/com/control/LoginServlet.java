@@ -48,11 +48,12 @@ public class LoginServlet extends HttpServlet {
             if (password.equals(user.getPassword())) {
 
                 HttpSession session = request.getSession();
+
+                user.setFailedLoginCount(0);
+                user.setAccountLockedUntil(null);
                 session.setAttribute("user", user);
                 session.setAttribute("username", user.getUsername());
                 session.setAttribute("userRole", userRole);
-                user.setFailedLoginCount(0);
-                user.setAccountLockedUntil(null);
                 session.setAttribute("lastAccessTime", now.getTime());
                 // 重定向到首页
                 response.sendRedirect(request.getContextPath() + "/index.jsp");

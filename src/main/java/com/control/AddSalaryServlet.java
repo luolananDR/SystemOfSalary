@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Date;
 
 @WebServlet("/AddSalaryServlet")
 public class AddSalaryServlet extends HttpServlet {
@@ -22,9 +23,19 @@ public class AddSalaryServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
+        String staffCodeStr = request.getParameter("staffCode");
+        SalaryRecordDao salaryDAO = new SalaryRecordDao();
+        if(salaryDAO.getByStaffCode(staffCodeStr) == true) {
+            request.setAttribute("msg", "该员工的工资记录已存在，请勿重复添加！");
+            request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
+            return;
+        }
+
         String staffName = request.getParameter("staffName");
-        String departmentName = request.getParameter("department");
-        String salaryMonth = request.getParameter("salaryMonth");
+        String departmentName = request.getParameter("departmentName");
+        String salaryMonthStr = request.getParameter("salaryMonth");
+        Date salaryMonth = Date.valueOf(salaryMonthStr + "-01");
+
         BigDecimal baseSalary = getBigDecimalParam(request, "baseSalary");
         BigDecimal positionAllowance = getBigDecimalParam(request, "positionAllowance");
         BigDecimal lunchAllowance = getBigDecimalParam(request, "lunchAllowance");
@@ -33,19 +44,21 @@ public class AddSalaryServlet extends HttpServlet {
         BigDecimal socialInsurance = getBigDecimalParam(request, "socialInsurance");
         BigDecimal housingFund = getBigDecimalParam(request, "housingFund");
         BigDecimal leaveDeduction = getBigDecimalParam(request, "leaveDeduction");
-        // 应发工资
+
+
+        // 2. 计算应发工资
         BigDecimal totalSalary = baseSalary
                 .add(positionAllowance)
                 .add(lunchAllowance)
                 .add(overtimePay)
                 .add(fullAttendanceBonus);
 
-        // 获取专项附加扣除
-        SpecialDeductionDao specialDeductionDao = new SpecialDeductionDao();
-        SpecialDeduction deduction = specialDeductionDao.getspecialDeductionBystaffName(staffName);
-        BigDecimal specialDeduction = deduction.getTotalDeduction();
+        // 3. 获取专项附加扣除
+        SpecialDeductionDao deductionDao = new SpecialDeductionDao();
+        SpecialDeduction deduction = deductionDao.getspecialDeductionBystaffCode(Integer.valueOf(staffCodeStr));
+        BigDecimal specialDeduction = (deduction != null) ? deduction.getTotalDeduction() : BigDecimal.ZERO;
 
-        // 应纳税所得额 = 应发工资 - 社保 - 公积金 - 起征点(5000) - 专项附加扣除
+        // 4. 应纳税所得额
         BigDecimal taxableIncome = totalSalary
                 .subtract(socialInsurance)
                 .subtract(housingFund)
@@ -56,33 +69,25 @@ public class AddSalaryServlet extends HttpServlet {
             taxableIncome = BigDecimal.ZERO;
         }
 
-        // 计算个税
-        BigDecimal incomeTax = calculateMonthlyTax(taxableIncome);
+        // 5. 个税
+        BigDecimal personalIncomeTax = calculateMonthlyTax(taxableIncome);
 
-        // 实发工资 = 应发工资 - 社保 - 公积金 - 个税 - 请假扣款
+        // 6. 实发工资
         BigDecimal actualSalary = totalSalary
                 .subtract(socialInsurance)
                 .subtract(housingFund)
-                .subtract(incomeTax)
+                .subtract(personalIncomeTax)
                 .subtract(leaveDeduction);
 
 
-        SalaryRecordDao salaryDAO=new SalaryRecordDao();
-        boolean isSuccess = salaryDAO.addSalary(staffName, departmentName, salaryMonth,
-                baseSalary, positionAllowance, lunchAllowance, overtimePay,
-                fullAttendanceBonus, socialInsurance, housingFund,
-                incomeTax, leaveDeduction, actualSalary);
-        if(!isSuccess){
-            request.setAttribute("msg", "录入失败！");
-            request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
-            return;
-        }
-        else {
-            request.setAttribute("msg", "录入成功！");
-            request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
-            return;
-        }
+        boolean isSuccess = salaryDAO.updateSalary(
+                staffName, departmentName, salaryMonthStr,
+                baseSalary, positionAllowance, lunchAllowance,
+                overtimePay, fullAttendanceBonus, socialInsurance,
+                housingFund, personalIncomeTax, leaveDeduction, actualSalary);
 
+        request.setAttribute("msg", isSuccess ? "修改成功！" : "修改失败！");
+        request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
 
 
     }

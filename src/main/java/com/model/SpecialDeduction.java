@@ -12,15 +12,16 @@ import java.util.stream.Stream;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SpecialDeduction {
-    private Integer id;
-    private Integer staffCode;
-    private BigDecimal childEducation;
-    private BigDecimal continueEducation;
-    private BigDecimal housingLoanInterest;
-    private BigDecimal housingRent;
-    private BigDecimal elderlySupport;
-    private BigDecimal seriousIllness;
-    private Timestamp createdAt;
+    private Integer id;                           // 主键ID
+    private Integer staffCode;                    // 员工编号（关联员工信息）
+
+    private BigDecimal childEducation;            // 子女教育
+    private BigDecimal continueEducation;         // 继续教育
+    private BigDecimal housingLoanInterest;       // 住房贷款利息
+    private BigDecimal housingRent;               // 住房租金
+    private BigDecimal elderlySupport;            // 赡养老人
+    private BigDecimal seriousIllness;            // 大病医疗
+    private Timestamp createdAt;                  // 创建时间
 
     public BigDecimal getTotalDeduction() {
         return Stream.of(

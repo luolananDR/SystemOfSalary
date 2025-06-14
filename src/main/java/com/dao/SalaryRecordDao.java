@@ -216,4 +216,17 @@ public class SalaryRecordDao extends BaseDao{
            return false;
         }
     }
+
+    public boolean getByStaffCode(String staffCodeStr) {
+    String sql = "SELECT * FROM salary_record WHERE staff_code = ?";
+    try (Connection conn = dataSource.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, staffCodeStr);
+        try (ResultSet rs = ps.executeQuery()) {
+            return rs.next();
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;}
+    }
 }

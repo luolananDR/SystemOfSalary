@@ -71,6 +71,7 @@
 
         <table>
             <tr>
+                <th>工号</th>
                 <th>姓名</th>
                 <th>部门</th>
                 <th>月份</th>
@@ -88,6 +89,7 @@
             </tr>
             <c:forEach var="s" items="${requestScope.salary}" varStatus="status">
                 <tr>
+                    <td>${s.staffCode}</td>
                     <td>${s.staffName}</td>
                     <td>${s.department}</td>
                     <td>${s.salaryMonth}</td>
@@ -112,6 +114,7 @@
         <form action="AddSalaryServlet" method="post">
             <fieldset>
                 <legend><strong>员工基本信息</strong></legend>
+                工号：<br><input type="text" name="staffCode" required /><br>
                 姓名：<br><input type="text" name="staffName" required /><br>
                 部门：<br><input type="text" name="department" required /><br>
                 月份：<br><input type="text" name="salaryMonth" placeholder="YYYY-MM" required />

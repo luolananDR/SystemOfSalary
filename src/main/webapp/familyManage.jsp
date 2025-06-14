@@ -31,6 +31,7 @@
     </div>
 
     <button class="btn btn-add" onclick="document.getElementById('addModal').style.display='block'">添加家庭成员</button>
+    <button class="btn btn-add" onclick="window.location.href='SpecialDedutionImportServlet?staffCode=<%= staff.getStaffCode() %>'">查看个人专项附加扣除</button>
 
     <table border="1" cellspacing="0" cellpadding="8">
         <thead>
@@ -103,32 +104,16 @@
                 <label for="addIsStudent">是否为学生</label>
                 <select id="addIsStudent" name="isStudent" required>
                     <option value="">-- 请选择 --</option>
-                    <option value="1">是</option>
-                    <option value="0">否</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="addIsRent">是否租房</label>
-                <select id="addIsRent" name="isRent" required>
-                    <option value="">-- 请选择 --</option>
-                    <option value="1">是</option>
-                    <option value="0">否</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="addHasMortgage">是否有房贷</label>
-                <select id="addHasMortgage" name="hasMortgage" required>
-                    <option value="">-- 请选择 --</option>
-                    <option value="1">是</option>
-                    <option value="0">否</option>
+                    <option value="true">是</option>
+                    <option value="false">否</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="addIsMajorDisease">是否患有重大疾病</label>
                 <select id="addIsMajorDisease" name="isMajorDisease" required>
                     <option value="">-- 请选择 --</option>
-                    <option value="1">是</option>
-                    <option value="0">否</option>
+                    <option value="true">是</option>
+                    <option value="false">否</option>
                 </select>
             </div>
             <div class="form-actions">
@@ -138,6 +123,7 @@
         </form>
     </div>
 </div>
+
 </body>
 </html>
 

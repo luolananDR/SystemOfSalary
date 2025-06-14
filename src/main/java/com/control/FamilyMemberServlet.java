@@ -47,9 +47,8 @@ public class FamilyMemberServlet extends HttpServlet {
             member.setRelation(request.getParameter("relation"));
             member.setBirthDate(Date.valueOf(request.getParameter("birthDate")));
             member.setIsStudent(Boolean.valueOf(request.getParameter("isStudent")));
-            member.setIsRenting(Boolean.valueOf(request.getParameter("isRenting")));
-            member.setHasMortgage(Boolean.valueOf(request.getParameter("hasMortgage")));
             member.setIsMajorDisease(Boolean.valueOf(request.getParameter("isMajorDisease")));
+
             familyMemberDao.addFamilyMember(member);
 
         } else if ("delete".equals(action)) {
@@ -58,6 +57,6 @@ public class FamilyMemberServlet extends HttpServlet {
             familyMemberDao.deleteFamilyMember(memberId);
         }
 
-        response.sendRedirect("FamilyMemberServlet?action=list&staffId=" +staffCode);
+        response.sendRedirect("FamilyMemberServlet?action=list&staffCode=" +staffCode);
     }
 }

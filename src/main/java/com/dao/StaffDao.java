@@ -10,31 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StaffDao extends BaseDao{
-    public Staff getStaffById(String staffId) {
-        Staff staff = null;
-        String sql = "SELECT * FROM staff WHERE id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, staffId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                staff = new Staff();
-                staff.setId(rs.getInt("id"));
-                staff.setName(rs.getString("name"));
-                staff.setStaffCode(rs.getString("staff_code"));
-                staff.setDepartmentId(Integer.valueOf(rs.getString("department_id")));
-                staff.setPosition(rs.getString("position"));
-                staff.setTitle(rs.getString("title"));
-                staff.setIdNumber(rs.getString("id_number"));
-                staff.setPhone(rs.getString("phone"));
-                staff.setAddress(rs.getString("address"));
-                staff.setCreatedAt(rs.getTimestamp("created_at"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return staff;
-    }
+
 
     public Staff getStaffByStaffCode(String staffCode) {
         Staff staff = null;
@@ -157,4 +133,6 @@ public class StaffDao extends BaseDao{
         }
         return staff;
     }
+
+
 }

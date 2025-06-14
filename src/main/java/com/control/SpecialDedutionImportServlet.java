@@ -1,7 +1,11 @@
 package com.control;
 
+import com.dao.FamilyMemberDao;
 import com.dao.SpecialDeductionDao;
+import com.dao.StaffDao;
+import com.model.FamilyMember;
 import com.model.SpecialDeduction;
+import com.model.Staff;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 
@@ -9,18 +13,134 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import jakarta.servlet.annotation.WebServlet;
-
+import java.sql.Timestamp;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 
 @WebServlet("/SpecialDedutionImportServlet")
 public class SpecialDedutionImportServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+       request.setCharacterEncoding("UTF-8");
+        String staffCode = request.getParameter("staffCode");
+        FamilyMemberDao familyDao = new FamilyMemberDao();
+        SpecialDeductionDao deductionDao = new SpecialDeductionDao();
+        StaffDao staffDao = new StaffDao();
+        SpecialDeduction deduction = deductionDao.getByStaffCode(staffCode);
+        if (deduction == null) {
+            deduction = new SpecialDeduction();
+            deduction.setStaffCode(Integer.valueOf(staffCode));
+        }
+        List<FamilyMember> familyMembers = familyDao.getByStaffCode(staffCode);
+        BigDecimal childEducation = BigDecimal.ZERO;
+        BigDecimal elderlySupport = BigDecimal.ZERO;
+        BigDecimal seriousIllness = BigDecimal.ZERO;
+        for (FamilyMember member : familyMembers) {
+            if ("子女".equals(member.getRelation()) && Boolean.TRUE.equals(member.getIsStudent())) {
+                childEducation = childEducation.add(BigDecimal.valueOf(1000));
+            }
+            if (("父亲".equals(member.getRelation()) || "母亲".equals(member.getRelation()))) {
+                elderlySupport = elderlySupport.add(BigDecimal.valueOf(1000));
+            }
+            if (Boolean.TRUE.equals(member.getIsMajorDisease())) {
+                seriousIllness = seriousIllness.add(BigDecimal.valueOf(1000));
+            }
 
+        }
+        deduction.setChildEducation(childEducation);
+        deduction.setElderlySupport(elderlySupport);
+        deduction.setSeriousIllness(seriousIllness);
+        Staff staff = staffDao.findByStaffCode(Integer.valueOf(staffCode));
+        request.setAttribute("deduction", deduction);
+        request.setAttribute("staff", staff);
+        request.getRequestDispatcher("/specialDeduction.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String staffCode = request.getParameter("staffCode");
+        BigDecimal childEducation = getBigDecimalParam(request, "childEducation");
+       String continueEducation = request.getParameter("continueEducation");
+       String housingLoanInterest = request.getParameter("housingLoanInterest");
+        String housingRent = request.getParameter("housingRent");
+        BigDecimal elderlySupport =getBigDecimalParam(request, "elderlySupport");
+        BigDecimal seriousIllness =getBigDecimalParam(request, "seriousIllness");
+
+        SpecialDeductionDao deductionDao = new SpecialDeductionDao();
+        SpecialDeduction deduction = deductionDao.getByStaffCode(staffCode);
+        if (deduction == null) {
+            deduction = new SpecialDeduction();
+            deduction.setStaffCode(Integer.valueOf(staffCode));
+            deduction.setChildEducation(childEducation);
+            if("有".equals(continueEducation)) {
+                deduction.setContinueEducation(BigDecimal.valueOf(0));
+            } else {
+                deduction.setContinueEducation(BigDecimal.valueOf(400));
+            }
+
+            if("无".equals(housingLoanInterest)) {
+                deduction.setHousingLoanInterest(BigDecimal.valueOf(0));
+            } else {
+                deduction.setHousingLoanInterest(BigDecimal.valueOf(1000));
+            }
+
+            if("无".equals(housingRent)) {
+                deduction.setHousingRent(BigDecimal.valueOf(0));
+            } else {
+                deduction.setHousingRent(BigDecimal.valueOf(1500));
+            }
+            deduction.setElderlySupport(elderlySupport);
+            deduction.setSeriousIllness(seriousIllness);
+            deduction.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            if (deductionDao.add(deduction)) {
+                request.setAttribute("msg", "个人专项附加扣除保存成功！");
+                request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
+                return;
+            } else {
+                request.setAttribute("msg", "个人专项附加扣除保存失败，请稍后再试！");
+                request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
+                return;
+            }
+        }
+        else{
+            deduction.setChildEducation(childEducation);
+            if("有".equals(continueEducation)) {
+                deduction.setContinueEducation(BigDecimal.valueOf(0));
+            } else {
+                deduction.setContinueEducation(BigDecimal.valueOf(400));
+            }
+
+            if("无".equals(housingLoanInterest)) {
+                deduction.setHousingLoanInterest(BigDecimal.valueOf(0));
+            } else {
+                deduction.setHousingLoanInterest(BigDecimal.valueOf(1000));
+            }
+
+            if("无".equals(housingRent)) {
+                deduction.setHousingRent(BigDecimal.valueOf(0));
+            } else {
+                deduction.setHousingRent(BigDecimal.valueOf(1500));
+            }
+            deduction.setElderlySupport(elderlySupport);
+            deduction.setSeriousIllness(seriousIllness);
+            deduction.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            if (deductionDao.update(deduction)) {
+                request.setAttribute("msg", "个人专项附加扣除更新成功！");
+                request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
+                return;
+            } else {
+                request.setAttribute("msg", "个人专项附加扣除更新失败，请稍后再试！");
+                request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
+                return;
+            }
+        }
+
+
+    }
+    private BigDecimal getBigDecimalParam(HttpServletRequest request, String name) {
+        String param = request.getParameter(name);
+        if (param == null || param.trim().isEmpty()) return BigDecimal.ZERO;
+        return new BigDecimal(param.trim());
     }
 }
