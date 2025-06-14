@@ -1,6 +1,7 @@
 package com.dao;
 
 import com.model.FamilyMember;
+import com.filter.decryptSM4;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FamilyMemberDao extends BaseDao{
+    decryptSM4 sm4 = new decryptSM4();
+
     public List<FamilyMember> getFamilyMembersByStaffCode(String staffCode) {
         List<FamilyMember> familyMembers = new ArrayList<>();
         String sql = "SELECT * FROM family_member WHERE staff_code = ?";
@@ -23,7 +26,7 @@ public class FamilyMemberDao extends BaseDao{
                 member.setStaffCode(rs.getInt("staff_code"));
                 member.setName(rs.getString("name"));
                 member.setRelation(rs.getString("relation"));
-                member.setIdNumber(rs.getString("id_number"));
+                member.setIdNumber(sm4.decryptSM4(rs.getString("idNumber")));
                 member.setBirthDate(rs.getDate("birth_date"));
                 member.setIsStudent(rs.getBoolean("is_student"));
                 member.setHasMortgage(rs.getBoolean("has_mortgage"));
