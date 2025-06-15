@@ -31,7 +31,7 @@
     </div>
 
     <button class="btn btn-add" onclick="document.getElementById('addModal').style.display='block'">添加家庭成员</button>
-    <button class="btn btn-add" onclick="window.location.href='SpecialDedutionImportServlet?staffCode=<%= staff.getStaffCode() %>'">生成个人专项附加扣除</button>
+    <button class="btn btn-add" onclick="window.location.href='SpecialDedutionImportServlet?staffCode=<%= staff.getStaffCode() %>'">更新个人专项附加扣除</button>
 
     <table border="1" cellspacing="0" cellpadding="8">
         <thead>

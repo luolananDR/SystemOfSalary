@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @WebServlet("/AddSalaryServlet")
 public class AddSalaryServlet extends HttpServlet {
@@ -30,7 +31,7 @@ public class AddSalaryServlet extends HttpServlet {
         String staffCodeStr = request.getParameter("staffCode");
         SalaryRecordDao salaryDAO = new SalaryRecordDao();
         StaffDao staffDao = new StaffDao();
-        if(salaryDAO.getByStaffCode(staffCodeStr) == true) {
+        if(salaryDAO.getByStaffCode(staffCodeStr) != null) {
             request.setAttribute("msg", "该员工的工资记录已存在，请勿重复添加！");
             request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
             return;
@@ -44,7 +45,6 @@ public class AddSalaryServlet extends HttpServlet {
         String staffName = request.getParameter("staffName");
         String departmentName = request.getParameter("departmentName");
         String salaryMonthStr = request.getParameter("salaryMonth");
-        Date salaryMonth = Date.valueOf(salaryMonthStr + "-01");
 
         BigDecimal baseSalary = getBigDecimalParam(request, "baseSalary");
         BigDecimal positionAllowance = getBigDecimalParam(request, "positionAllowance");
@@ -89,12 +89,20 @@ public class AddSalaryServlet extends HttpServlet {
                 .subtract(personalIncomeTax)
                 .subtract(leaveDeduction);
 
-
-        boolean isSuccess = salaryDAO.addSalary(
-                staffName, departmentName, String.valueOf(salaryMonth),
-                baseSalary, positionAllowance, lunchAllowance,
-                overtimePay, fullAttendanceBonus, socialInsurance,
-                housingFund, personalIncomeTax, leaveDeduction, actualSalary);
+        SalaryRecord salaryRecord = new SalaryRecord();
+        salaryRecord.setStaffCode(Integer.parseInt(staffCodeStr));
+        salaryRecord.setSalaryMonth(Date.valueOf(salaryMonthStr));
+        salaryRecord.setBaseSalary(baseSalary);
+        salaryRecord.setPositionAllowance(positionAllowance);
+        salaryRecord.setLunchAllowance(lunchAllowance);
+        salaryRecord.setOvertimePay(overtimePay);
+        salaryRecord.setFullAttendanceBonus(fullAttendanceBonus);
+        salaryRecord.setSocialInsurance(socialInsurance);
+        salaryRecord.setHousingFund(housingFund);
+        salaryRecord.setPersonalIncomeTax(personalIncomeTax);
+        salaryRecord.setLeaveDeduction(leaveDeduction);
+        salaryRecord.setActualSalary(actualSalary);
+        boolean isSuccess = salaryDAO.insert(salaryRecord);
 
        if(isSuccess){
             request.setAttribute("msg", "工资记录添加成功！");

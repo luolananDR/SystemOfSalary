@@ -96,7 +96,7 @@ public class SalaryEditServlet extends HttpServlet {
 
         SalaryRecordDao salaryDAO = new SalaryRecordDao();
         boolean isSuccess = salaryDAO.updateSalary(staffCode,
-                staffName, salaryMonth,
+                 salaryMonth,
                 baseSalary, positionAllowance, lunchAllowance,
                 overtimePay, fullAttendanceBonus, socialInsurance,
                 housingFund, personalIncomeTax, leaveDeduction, actualSalary);

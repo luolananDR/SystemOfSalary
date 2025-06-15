@@ -178,54 +178,41 @@ public class SalaryRecordDao extends BaseDao{
         return null;
     }
 
-    public boolean addSalary(String staffName, String departmentName, String salaryMonth, BigDecimal baseSalary, BigDecimal positionAllowance, BigDecimal lunchAllowance, BigDecimal overtimePay, BigDecimal fullAttendanceBonus, BigDecimal socialInsurance, BigDecimal housingFund, BigDecimal personalIncomeTax, BigDecimal leaveDeduction, BigDecimal actualSalary) {
-        String sql = "UPDATE salary_record SET base_salary = ?, position_allowance = ?, lunch_allowance = ?, " +
-                "overtime_pay = ?, full_attendance_bonus = ?, social_insurance = ?, housing_fund = ?, " +
-                "personal_income_tax = ?, leave_deduction = ?, actual_salary = ? " +
-                "WHERE staff_code = (SELECT s.staff_code FROM staff s JOIN department d ON s.department_id = d.id " +
-                "WHERE s.name = ? AND d.name = ?) AND salary_month = ?";
 
+
+    public SalaryRecord getByStaffCode(String staffCodeStr) {
+        String sql = "SELECT * FROM salary_record WHERE staff_code = ? ";
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps= conn.prepareStatement(sql)) {
-            LocalDate firstDay = LocalDate.parse(salaryMonth);
-            Timestamp sMonth = Timestamp.valueOf(firstDay.atStartOfDay());
-            ps.setBigDecimal(1, baseSalary);
-            ps.setBigDecimal(2, positionAllowance);
-            ps.setBigDecimal(3, lunchAllowance);
-            ps.setBigDecimal(4, overtimePay);
-            ps.setBigDecimal(5, fullAttendanceBonus);
-            ps.setBigDecimal(6, socialInsurance);
-            ps.setBigDecimal(7, housingFund);
-            ps.setBigDecimal(8, personalIncomeTax);
-            ps.setBigDecimal(9, leaveDeduction);
-            ps.setBigDecimal(10, actualSalary);
-            ps.setString(11, staffName);
-            ps.setString(12, departmentName);
-            ps.setTimestamp(13, sMonth);
-
-            int result = ps.executeUpdate();
-            return result > 0;
-
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, Integer.parseInt(staffCodeStr));
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    SalaryRecord record = new SalaryRecord();
+                    record.setId(rs.getInt("id"));
+                    record.setStaffCode(rs.getInt("staff_code"));
+                    record.setSalaryMonth(Date.valueOf(rs.getDate("salary_month").toLocalDate()));
+                    record.setBaseSalary(rs.getBigDecimal("base_salary"));
+                    record.setPositionAllowance(rs.getBigDecimal("position_allowance"));
+                    record.setLunchAllowance(rs.getBigDecimal("lunch_allowance"));
+                    record.setOvertimePay(rs.getBigDecimal("overtime_pay"));
+                    record.setFullAttendanceBonus(rs.getBigDecimal("full_attendance_bonus"));
+                    record.setSocialInsurance(rs.getBigDecimal("social_insurance"));
+                    record.setHousingFund(rs.getBigDecimal("housing_fund"));
+                    record.setPersonalIncomeTax(rs.getBigDecimal("personal_income_tax"));
+                    record.setLeaveDeduction(rs.getBigDecimal("leave_deduction"));
+                    record.setActualSalary(rs.getBigDecimal("actual_salary"));
+                    return record;
+                }
+            }
         } catch (SQLException e) {
-           return false;
+            e.printStackTrace();
+        return null;
         }
-    }
-
-    public boolean getByStaffCode(String staffCodeStr) {
-    String sql = "SELECT * FROM salary_record WHERE staff_code = ?";
-    try (Connection conn = dataSource.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setString(1, staffCodeStr);
-        try (ResultSet rs = ps.executeQuery()) {
-            return rs.next();
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-        return false;}
+        return null;
     }
 
 
-    public boolean updateSalary(String staffCode, String staffName, String salaryMonth, BigDecimal baseSalary, BigDecimal positionAllowance, BigDecimal lunchAllowance, BigDecimal overtimePay, BigDecimal fullAttendanceBonus, BigDecimal socialInsurance, BigDecimal housingFund, BigDecimal personalIncomeTax, BigDecimal leaveDeduction, BigDecimal actualSalary) {
+    public boolean updateSalary(String staffCode, String salaryMonth, BigDecimal baseSalary, BigDecimal positionAllowance, BigDecimal lunchAllowance, BigDecimal overtimePay, BigDecimal fullAttendanceBonus, BigDecimal socialInsurance, BigDecimal housingFund, BigDecimal personalIncomeTax, BigDecimal leaveDeduction, BigDecimal actualSalary) {
         String sql = "UPDATE salary_record SET base_salary = ?, position_allowance = ?, lunch_allowance = ?, " +
                 "overtime_pay = ?, full_attendance_bonus = ?, social_insurance = ?, housing_fund = ?, " +
                 "personal_income_tax = ?, leave_deduction = ?, actual_salary = ? " +
@@ -233,8 +220,6 @@ public class SalaryRecordDao extends BaseDao{
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps= conn.prepareStatement(sql)) {
-            LocalDate firstDay = LocalDate.parse(salaryMonth);
-            Timestamp sMonth = Timestamp.valueOf(firstDay.atStartOfDay());
             ps.setBigDecimal(1, baseSalary);
             ps.setBigDecimal(2, positionAllowance);
             ps.setBigDecimal(3, lunchAllowance);
@@ -246,7 +231,7 @@ public class SalaryRecordDao extends BaseDao{
             ps.setBigDecimal(9, leaveDeduction);
             ps.setBigDecimal(10, actualSalary);
             ps.setInt(11, Integer.parseInt(staffCode));
-            ps.setTimestamp(12, sMonth);
+            ps.setString(12, salaryMonth);
 
             int result = ps.executeUpdate();
             return result > 0;

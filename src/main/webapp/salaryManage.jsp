@@ -174,7 +174,9 @@
                 <th>个税</th>
                 <th>请假扣款</th>
                 <th>实发工资</th>
+                <c:if test="${role == 'admin' or role == 'finance'}">
                 <th>操作</th>
+                </c:if>
             </tr>
             <c:forEach var="s" items="${requestScope.salary}" varStatus="status">
                 <tr>
@@ -192,21 +194,24 @@
                     <td>${s.personalIncomeTax}</td>
                     <td>${s.leaveDeduction}</td>
                     <td>${s.actualSalary}</td>
+                    <c:if test="${role == 'admin' or role == 'finance'}">
                     <td><a href="SalaryEditServlet?id=${s.id}">修改</a></td>
+                    </c:if>
                 </tr>
             </c:forEach>
         </table>
     </div>
 
+    <c:if test="${role == 'admin' or role == 'finance'}">
     <div class="right-panel">
-        <h3>新增工资记录</h3>
+        <h3>工资录入</h3>
         <form action="AddSalaryServlet" method="post">
             <fieldset>
                 <legend><strong>员工基本信息</strong></legend>
                 工号：<br><input type="text" name="staffCode" required /><br>
                 姓名：<br><input type="text" name="staffName" required /><br>
                 部门：<br><input type="text" name="departmentName" required /><br>
-                月份：<br><input type="text" name="salaryMonth" placeholder="YYYY-MM" required />
+                月份：<br><input type="date" name="salaryMonth"  required />
             </fieldset>
             <fieldset>
                 <legend><strong>工资明细</strong></legend>
@@ -225,7 +230,7 @@
             <input type="submit" value="新增" />
         </form>
     </div>
-
+    </c:if>
 </div>
 
 </body>
