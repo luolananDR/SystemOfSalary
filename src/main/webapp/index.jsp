@@ -39,7 +39,7 @@
     </c:if>
 
     <!-- 财务管理员权限 -->
-     <c:if test="${role == 'admin' or role == 'finance'}">
+     <c:if test="${role == 'admin' or role == 'finance' or role =='ceo'}">
     <button onclick="location.href='SalaryQueryServlet'">工资管理</button>
     <button onclick="location.href='salaryImport.jsp'">工资导入</button>
     </c:if>
