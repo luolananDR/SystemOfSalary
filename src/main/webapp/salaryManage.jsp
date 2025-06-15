@@ -109,6 +109,7 @@
         </table>
     </div>
 
+    <c:if test="${role == 'admin' or role == 'finance' }">
     <div class="right-panel">
         <h3>新增工资记录</h3>
         <form action="AddSalaryServlet" method="post">
@@ -136,7 +137,7 @@
             <input type="submit" value="新增" />
         </form>
     </div>
-
+    </c:if>
 </div>
 
 
