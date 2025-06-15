@@ -96,32 +96,32 @@
     <form action="SpecialDedutionImportServlet" method="post">
         <input type="hidden" name="staffCode" value="${deduction.staffCode}">
 
-        <label>子女教育：</label>
-        <input type="text" name="childEducation" value="${deduction.childEducation}"> 元
+        <label>子女教育：(元)</label>
+        <input type="text" name="childEducation" value="${deduction.childEducation}">
 
-        <label>继续教育：</label>
+        <label>继续教育：(元)</label>
         <select name="continueEducation">
-            <option value="无" ${deduction.continueEducation == '无' ? 'selected' : ''}>无</option>
-            <option value="有" ${deduction.continueEducation == '有' ? 'selected' : ''}>有（400元）</option>
+            <option value="无">无</option>
+            <option value="有">有（400元）</option>
         </select>
 
-        <label>住房贷款：</label>
+        <label>住房贷款：(元)</label>
         <select name="housingLoanInterest">
-            <option value="无" ${deduction.housingLoanInterest == '无' ? 'selected' : ''}>无</option>
-            <option value="有" ${deduction.housingLoanInterest == '有' ? 'selected' : ''}>有（1000元）</option>
+            <option value="无" >无</option>
+            <option value="有" >有（1000元）</option>
         </select>
 
-        <label>住房租金：</label>
+        <label>住房租金：(元)</label>
         <select name="housingRent">
-            <option value="无" ${deduction.housingRent == '无' ? 'selected' : ''}>无</option>
-            <option value="有" ${deduction.housingRent == '有' ? 'selected' : ''}>有（1500元）</option>
+            <option value="无" >无</option>
+            <option value="有" >有（1500元）</option>
         </select>
 
-        <label>赡养老人：</label>
-        <input type="text" name="elderlySupport" value="${deduction.elderlySupport}"> 元
+        <label>赡养老人：(元)</label>
+        <input type="text" name="elderlySupport" value="${deduction.elderlySupport}">
 
-        <label>大病医疗：</label>
-        <input type="text" name="seriousIllness" value="${deduction.seriousIllness}"> 元
+        <label>大病医疗：(元)</label>
+        <input type="text" name="seriousIllness" value="${deduction.seriousIllness}">
 
         <button type="submit">保存修改</button>
         <a href="javascript:history.back();">返回</a>

@@ -45,7 +45,7 @@ public class SalaryImportServlet extends HttpServlet {
                 }
             }
             if(successCount==0){
-                request.setAttribute("msg", "上传失败！");
+                request.setAttribute("msg", "导入失败！");
                 request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
                 return;
             }
@@ -54,7 +54,7 @@ public class SalaryImportServlet extends HttpServlet {
             e.printStackTrace();
             request.setAttribute("msg", "导入失败，服务器异常！");
             request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
-        } request.setAttribute("msg", "上传成功！");
+        } request.setAttribute("msg", "导入成功！");
         request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
     }
     public  List<SalaryRecord>  readSalaryRecords(InputStream inputStream) throws Exception{
@@ -66,11 +66,11 @@ public class SalaryImportServlet extends HttpServlet {
             if (row == null) continue;
 
             SalaryRecord record = new SalaryRecord();
-            String staffCode =  row.getCell(0).getStringCellValue();
+            Integer staffCode = getInteger(row.getCell(0));
             String monthStr = row.getCell(1).getStringCellValue();
             Date salaryMonth = Date.valueOf(monthStr + "-01");
 
-            record.setStaffCode(Integer.valueOf(staffCode));
+            record.setStaffCode(staffCode);
             record.setSalaryMonth(salaryMonth);
             record.setBaseSalary(getDecimal(row.getCell(2)));
             record.setPositionAllowance(getDecimal(row.getCell(3)));
@@ -90,7 +90,7 @@ public class SalaryImportServlet extends HttpServlet {
 
             // 获取专项附加扣除
             SpecialDeductionDao specialDeductionDao = new SpecialDeductionDao();
-            SpecialDeduction deduction = specialDeductionDao.getByStaffCode(staffCode);
+            SpecialDeduction deduction = specialDeductionDao.getByStaffCode(staffCode.toString());
             BigDecimal specialDeduction = deduction.getTotalDeduction();
 
             // 应纳税所得额 = 应发工资 - 社保 - 公积金 - 起征点(5000) - 专项附加扣除

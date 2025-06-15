@@ -121,7 +121,7 @@
         <h2>编辑员工信息</h2>
         <form action="StaffServlet" method="post">
             <input type="hidden" name="action" value="update">
-            <input type="hidden" id="editStaffId" name="staffId">
+            <input type="hidden" id="editStaffId" name="staffId" >
             <div class="form-group">
                 <label for="editName">姓名</label>
                 <input type="text" id="editName" name="name" required>

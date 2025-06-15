@@ -1,5 +1,6 @@
 package com.dao;
 
+import com.filter.SensitiveDataEncryptFilter;
 import com.model.Staff;
 
 import java.sql.Connection;
@@ -59,20 +60,24 @@ public class StaffDao extends BaseDao{
     }
 
     public void updateStaff(Staff staff) {
-        String sql = "UPDATE staff SET name = ?, department_id = ? WHERE id = ?";
+        String sql = "UPDATE staff SET name = ?, department_id = ?, position = ?, title = ?, id_number = ?, phone = ?, address = ? WHERE staff_code = ?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, staff.getName());
             ps.setInt(2, staff.getDepartmentId());
-            ps.setInt(3, staff.getId());
+            ps.setString(3, staff.getPosition());
+            ps.setString(4, staff.getTitle());
+            ps.setString(5, staff.getIdNumber());
+            ps.setString(6, staff.getPhone());
+            ps.setString(7, staff.getAddress());
+            ps.setString(8, staff.getStaffCode());
             ps.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
-        }
+            e.printStackTrace();}
     }
 
     public void deleteStaff(String staffId) {
-        String sql = "DELETE FROM staff WHERE id = ?";
+        String sql = "DELETE FROM staff WHERE staff_code = ?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, staffId);
@@ -96,9 +101,12 @@ public class StaffDao extends BaseDao{
                 staff.setDepartmentId(Integer.valueOf(rs.getString("department_id")));
                 staff.setPosition(rs.getString("position"));
                 staff.setTitle(rs.getString("title"));
-                staff.setIdNumber(rs.getString("id_number"));
-                staff.setPhone(rs.getString("phone"));
-                staff.setAddress(rs.getString("address"));
+                String encrypted_idNumber=rs.getString("id_number");
+                staff.setIdNumber(SensitiveDataEncryptFilter.decryptSM4(encrypted_idNumber));
+                String encrypted_phone=rs.getString("phone");
+                staff.setPhone(SensitiveDataEncryptFilter.decryptSM4(encrypted_phone));
+                String encrypted_address= rs.getString("address");
+                staff.setAddress(SensitiveDataEncryptFilter.decryptSM4(encrypted_address));
                 staff.setCreatedAt(rs.getTimestamp("created_at"));
                 staffList.add(staff);
             }

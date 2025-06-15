@@ -10,8 +10,6 @@
 <div class="container">
     <h1>用户管理</h1>
 
-    <button class="btn btn-add" onclick="document.getElementById('addModal').style.display='block'">添加新用户</button>
-
     <table>
         <thead>
         <tr>
@@ -47,15 +45,6 @@
                             onclick="openEditModal('${user.id}', ${user.roleId})">
                         编辑权限
                     </button>
-                    <form action="UserServlet" method="post" style="display:inline;">
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="username" value="${user.username}">
-                        <input type="hidden" id="userId" value="${user.id}">
-                        <button type="submit" class="btn btn-delete"
-                                onclick="return confirm('确定要删除用户 ${user.username} 吗？')">
-                            删除
-                        </button>
-                    </form>
                 </td>
             </tr>
         </c:forEach>
