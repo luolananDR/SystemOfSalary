@@ -1,5 +1,6 @@
 package com.dao;
 
+import com.filter.SensitiveDataEncryptFilter;
 import com.model.FamilyMember;
 
 import java.sql.Connection;
@@ -23,7 +24,8 @@ public class FamilyMemberDao extends BaseDao{
                 member.setStaffCode(rs.getInt("staff_code"));
                 member.setName(rs.getString("name"));
                 member.setRelation(rs.getString("relation"));
-                member.setIdNumber(rs.getString("id_number"));
+               String encrypted_idNumber= rs.getString("id_number");
+                member.setIdNumber(SensitiveDataEncryptFilter.decryptSM4(encrypted_idNumber));
                 member.setBirthDate(rs.getDate("birth_date"));
                 member.setIsStudent(rs.getBoolean("is_student"));
                 member.setIsMajorDisease(rs.getBoolean("is_major_disease"));

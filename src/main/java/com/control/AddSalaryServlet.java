@@ -2,6 +2,8 @@ package com.control;
 import com.dao.SalaryRecordDao;
 import com.dao.SpecialDeductionDao;
 import com.dao.StaffDao;
+import com.filter.AuditLogFilter;
+import com.filter.SensitiveDataEncryptFilter;
 import com.model.SalaryRecord;
 import com.model.SpecialDeduction;
 import com.model.Staff;
@@ -89,12 +91,18 @@ public class AddSalaryServlet extends HttpServlet {
 
 
         boolean isSuccess = salaryDAO.addSalary(
-                staffName, departmentName, salaryMonthStr,
+                staffName, departmentName, String.valueOf(salaryMonth),
                 baseSalary, positionAllowance, lunchAllowance,
                 overtimePay, fullAttendanceBonus, socialInsurance,
                 housingFund, personalIncomeTax, leaveDeduction, actualSalary);
 
-        request.setAttribute("msg", isSuccess ? "录入成功！" : "录入失败！");
+       if(isSuccess){
+            request.setAttribute("msg", "工资记录添加成功！");
+           AuditLogFilter.log(request, "添加", "工资记录", "成功", "通过过滤器记录");
+        } else {
+            request.setAttribute("msg", "工资记录添加失败，请重试！");
+           AuditLogFilter.log(request, "添加", "工资记录", "成功", "通过过滤器记录");
+       }
         request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
 
 

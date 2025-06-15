@@ -83,7 +83,7 @@
 
     <!-- 总经理权限 -->
     <c:if test="${role == 'ceo' or role =='admin'}">
-    <button onclick="location.href='salaryQuery.jsp'">工资查询</button>
+    <button onclick="location.href='salaryQuery.jsp'">工资导出</button>
     </c:if>
 
     <!-- 审计员权限 -->

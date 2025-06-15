@@ -198,7 +198,6 @@
         </table>
     </div>
 
-    <c:if test="${role == 'admin' or role == 'finance' }">
     <div class="right-panel">
         <h3>新增工资记录</h3>
         <form action="AddSalaryServlet" method="post">
@@ -206,7 +205,7 @@
                 <legend><strong>员工基本信息</strong></legend>
                 工号：<br><input type="text" name="staffCode" required /><br>
                 姓名：<br><input type="text" name="staffName" required /><br>
-                部门：<br><input type="text" name="department" required /><br>
+                部门：<br><input type="text" name="departmentName" required /><br>
                 月份：<br><input type="text" name="salaryMonth" placeholder="YYYY-MM" required />
             </fieldset>
             <fieldset>
@@ -226,9 +225,8 @@
             <input type="submit" value="新增" />
         </form>
     </div>
-    </c:if>
-</div>
 
+</div>
 
 </body>
 </html>

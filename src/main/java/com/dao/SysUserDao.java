@@ -1,7 +1,7 @@
 package com.dao;
 
 import com.model.SysUser;
-
+import com.filter.SensitiveDataEncryptFilter;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,10 +92,14 @@ public class SysUserDao extends BaseDao{
                     user.setId(rs.getInt("id"));
                     user.setUsername(rs.getString("username"));
                     user.setPassword(rs.getString("password"));
-                    user.setRealName(rs.getString("real_name"));
-                    user.setIdNumber(rs.getString("id_number"));
-                    user.setPhone(rs.getString("phone"));
-                    user.setAddress(rs.getString("address"));
+                   String encrypted_realName=rs.getString("real_name");
+                    user.setRealName(SensitiveDataEncryptFilter.decryptSM4(encrypted_realName));
+                    String encrypted_idNumber=rs.getString("id_number");
+                    user.setIdNumber(SensitiveDataEncryptFilter.decryptSM4(encrypted_idNumber));
+                    String encrypted_phone=rs.getString("phone");
+                    user.setPhone(SensitiveDataEncryptFilter.decryptSM4(encrypted_phone));
+                    String encrypted_address=rs.getString("address");
+                    user.setAddress(SensitiveDataEncryptFilter.decryptSM4(encrypted_address));
                     user.setRoleId(rs.getInt("role_id"));
                     user.setIsLocked(rs.getBoolean("is_locked"));
                     user.setLastPasswordChange(rs.getTimestamp("last_password_change"));

@@ -76,4 +76,20 @@ public class SensitiveDataEncryptFilter implements Filter {
             throw new RuntimeException("SM4加密失败", e);
         }
     }
+    public static String decryptSM4(String base64Input) {
+        try {
+            PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new SM4Engine());
+            cipher.init(false, new KeyParameter(SM4_KEY.getBytes()));  // false 表示解密
+            byte[] inputBytes = Base64.getDecoder().decode(base64Input);
+            byte[] output = new byte[cipher.getOutputSize(inputBytes.length)];
+            int len1 = cipher.processBytes(inputBytes, 0, inputBytes.length, output, 0);
+            int len2 = cipher.doFinal(output, len1);
+            int totalLen = len1 + len2;
+            byte[] result = new byte[totalLen];
+            System.arraycopy(output, 0, result, 0, totalLen);
+            return new String(result, "UTF-8");
+        } catch (Exception e) {
+            throw new RuntimeException("SM4解密失败", e);
+        }
+    }
 }

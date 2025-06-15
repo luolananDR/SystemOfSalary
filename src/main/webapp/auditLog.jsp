@@ -25,6 +25,8 @@
         </select>
     时间：<input type="date" name="start"> ~ <input type="date" name="end">
     <button type="submit">查询</button>
+    <button type="button" onclick="window.location.href='index.jsp'">返回</button>
+
 </form>
 
 <table>
