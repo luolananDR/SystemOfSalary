@@ -121,7 +121,7 @@
         <h2>编辑员工信息</h2>
         <form action="StaffServlet" method="post">
             <input type="hidden" name="action" value="update">
-            <input type="hidden" id="editStaffId" name="staffId" >
+            <input type="hidden" id="editStaffCode" name="staffCode">
             <div class="form-group">
                 <label for="editName">姓名</label>
                 <input type="text" id="editName" name="name" required>
@@ -135,8 +135,8 @@
                 <input type="text" id="editPosition" name="position" required>
             </div>
             <div class="form-group">
-                <label for="editIdCard">身份证号</label>
-                <input type="text" id="editIdCard" name="idCard" required pattern="\d{18}">
+                <label for="editIdNumber">身份证号</label>
+                <input type="text" id="editIdNumber" name="idNumber" required pattern="\d{18}">
             </div>
             <div class="form-group">
                 <label for="editPhone">手机号</label>
@@ -158,12 +158,10 @@
 
 <script>
     // 仅保留必要的加载员工数据函数
-    function loadStaffData(staffId) {
-        // 这里应该通过表单提交或页面跳转来加载数据
-        // 实际项目中可以使用AJAX，但根据要求不使用不必要的Script
-        // 建议使用单独的编辑页面或表单提交方式
-        console.log("加载员工数据: " + staffId);
-        // 实际实现需要根据您的后端接口进行调整
+    function loadStaffData(staffCode) {
+        document.getElementById("editStaffCode").value = staffCode;
+        console.log("加载员工数据: " + staffCode);
+
     }
 
     // 关闭模态框当点击模态框外部
