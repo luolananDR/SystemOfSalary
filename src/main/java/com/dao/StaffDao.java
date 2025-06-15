@@ -59,12 +59,15 @@ public class StaffDao extends BaseDao{
     }
 
     public void updateStaff(Staff staff) {
-        String sql = "UPDATE staff SET name = ?, department_id = ? WHERE id = ?";
+        String sql = "UPDATE staff SET name = ?, department_id = ?, id_number=?,phone=?, address=? WHERE staff_code = ?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, staff.getName());
             ps.setInt(2, staff.getDepartmentId());
-            ps.setInt(3, staff.getId());
+            ps.setString(3, staff.getIdNumber());
+            ps.setString(4, staff.getPhone());
+            ps.setString(5, staff.getAddress());
+            ps.setString(6,staff.getStaffCode());
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

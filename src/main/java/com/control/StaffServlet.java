@@ -46,7 +46,7 @@ public class StaffServlet extends HttpServlet {
         } else if ("update".equals(action)) {
             // 更新员工信息
             Staff staff = new Staff();
-            staff.setStaffCode(request.getParameter("staffId"));
+            staff.setStaffCode(request.getParameter("staffCode"));
             staff.setName(request.getParameter("name"));
             staff.setDepartmentId(Integer.valueOf(request.getParameter("department")));
             staff.setPosition(request.getParameter("position"));
