@@ -1,4 +1,5 @@
 package com.model;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -8,13 +9,13 @@ import java.sql.Timestamp;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OperationLog {
-    private Integer id;
-    private Integer userId;
-    private Timestamp operationTime;
+public class AuditLog {
+    private String username;
+    private String role;
     private String operationType;
-    private String targetTable;
-    private Integer targetId;
-    private String details;
-    private String hmacSm3;
+    private String operationObject;
+    private String ipAddress;
+    private Timestamp timestamp;
+    private String result;
+    private String remarks;
 }

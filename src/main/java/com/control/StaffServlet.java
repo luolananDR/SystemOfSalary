@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.dao.StaffDao;
+import com.filter.AuditLogFilter;
 import com.model.Staff;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -18,6 +19,7 @@ public class StaffServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 显示所有员工
+        AuditLogFilter.log(request, "查询", "员工信息", "成功", "通过过滤器记录");
         List<Staff> staffList = staffDao.getAllStaff();
         request.setAttribute("staffList", staffList);
         RequestDispatcher rd = getServletContext().getRequestDispatcher("/staffManage.jsp");
@@ -29,6 +31,7 @@ public class StaffServlet extends HttpServlet {
 
         if ("add".equals(action)) {
             // 添加新员工
+            AuditLogFilter.log(request, "添加", "员工信息", "成功", "通过过滤器记录");
             Staff staff = new Staff();
             staff.setName(request.getParameter("name"));
             staff.setDepartmentId(Integer.valueOf(request.getParameter("department")));
@@ -55,6 +58,7 @@ public class StaffServlet extends HttpServlet {
 
         } else if ("delete".equals(action)) {
             // 删除员工
+            AuditLogFilter.log(request, "删除", "员工信息", "成功", "通过过滤器记录");
             String staffId = request.getParameter("staffId");
             staffDao.deleteStaff(staffId);
         }

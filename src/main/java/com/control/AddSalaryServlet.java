@@ -1,8 +1,10 @@
 package com.control;
 import com.dao.SalaryRecordDao;
 import com.dao.SpecialDeductionDao;
+import com.dao.StaffDao;
 import com.model.SalaryRecord;
 import com.model.SpecialDeduction;
+import com.model.Staff;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
@@ -25,8 +27,14 @@ public class AddSalaryServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String staffCodeStr = request.getParameter("staffCode");
         SalaryRecordDao salaryDAO = new SalaryRecordDao();
+        StaffDao staffDao = new StaffDao();
         if(salaryDAO.getByStaffCode(staffCodeStr) == true) {
             request.setAttribute("msg", "该员工的工资记录已存在，请勿重复添加！");
+            request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
+            return;
+        }
+        if( staffDao.getStaffByStaffCode(staffCodeStr) == null) {
+            request.setAttribute("msg", "该员工不存在，请检查员工编号！");
             request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
             return;
         }
@@ -55,7 +63,7 @@ public class AddSalaryServlet extends HttpServlet {
 
         // 3. 获取专项附加扣除
         SpecialDeductionDao deductionDao = new SpecialDeductionDao();
-        SpecialDeduction deduction = deductionDao.getspecialDeductionBystaffCode(Integer.valueOf(staffCodeStr));
+        SpecialDeduction deduction = deductionDao.getByStaffCode(staffCodeStr);
         BigDecimal specialDeduction = (deduction != null) ? deduction.getTotalDeduction() : BigDecimal.ZERO;
 
         // 4. 应纳税所得额
@@ -80,13 +88,13 @@ public class AddSalaryServlet extends HttpServlet {
                 .subtract(leaveDeduction);
 
 
-        boolean isSuccess = salaryDAO.updateSalary(
+        boolean isSuccess = salaryDAO.addSalary(
                 staffName, departmentName, salaryMonthStr,
                 baseSalary, positionAllowance, lunchAllowance,
                 overtimePay, fullAttendanceBonus, socialInsurance,
                 housingFund, personalIncomeTax, leaveDeduction, actualSalary);
 
-        request.setAttribute("msg", isSuccess ? "修改成功！" : "修改失败！");
+        request.setAttribute("msg", isSuccess ? "录入成功！" : "录入失败！");
         request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
 
 

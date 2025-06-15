@@ -1,6 +1,7 @@
 package com.control;
 
 import com.dao.SysUserDao;
+import com.filter.AuditLogFilter;
 import com.model.SysUser;
 import com.model.UserRole;
 import jakarta.servlet.*;
@@ -40,36 +41,41 @@ public class LoginServlet extends HttpServlet {
         UserRole userRole = user != null ? user.getRole() : null;
         if (user != null) {
             // 先判断是否锁定中
-            if (user.getIsLocked() != null && user.getIsLocked()&& user.getAccountLockedUntil() != null && user.getAccountLockedUntil().after(now)) {
+            if ( user.getAccountLockedUntil() != null && user.getAccountLockedUntil().after(now)) {
+                AuditLogFilter.log(request, "登录", "系统", "失败", "账号已锁定");
                 request.setAttribute("errorMessage", "账号已锁定，请于 " + user.getAccountLockedUntil() + " 后再试");
                 request.getRequestDispatcher("/login.jsp").forward(request, response);
                 return;
             }
-            if (password.equals(user.getPassword())) {
+            else {
+                user.setIsLocked(false);
+                if (password.equals(user.getPassword())) {
+                    HttpSession session = request.getSession();
+                    user.setFailedLoginCount(0);
+                    user.setAccountLockedUntil(null);
+                    session.setAttribute("user", user);
+                    session.setAttribute("username", user.getUsername());
+                    session.setAttribute("userRole", userRole);
+                    session.setAttribute("lastAccessTime", now.getTime());
+                    AuditLogFilter.log(request, "登录", "系统", "成功", "登录成功");
+                    // 重定向到首页
+                    response.sendRedirect(request.getContextPath() + "/index.jsp");
+                    UserDao.updateUser(user);
+                    return;
+                }else{
+                    int failCount = user.getFailedLoginCount() == null ? 1 : user.getFailedLoginCount() + 1;
+                    user.setFailedLoginCount(failCount);
+                    user.setLastFailedLoginTime(now);
 
-                HttpSession session = request.getSession();
-
-                user.setFailedLoginCount(0);
-                user.setAccountLockedUntil(null);
-                session.setAttribute("user", user);
-                session.setAttribute("username", user.getUsername());
-                session.setAttribute("userRole", userRole);
-                session.setAttribute("lastAccessTime", now.getTime());
-                // 重定向到首页
-                response.sendRedirect(request.getContextPath() + "/index.jsp");
-                return;
-            }else{
-                int failCount = user.getFailedLoginCount() == null ? 1 : user.getFailedLoginCount() + 1;
-                user.setFailedLoginCount(failCount);
-                user.setLastFailedLoginTime(now);
-
-                if (failCount >= 5) {
-                    // 锁定30分钟
-                    user.setIsLocked(true);
-                    user.setAccountLockedUntil(new Timestamp(now.getTime() + 30 * 60 * 1000));
-                    request.setAttribute("errorMessage", "登录失败5次，账号已锁定30分钟");
-                } else {
-                    request.setAttribute("errorMessage", "用户名或密码错误，您已失败 " + failCount + " 次");
+                    if (failCount >= 5) {
+                        // 锁定30分钟
+                        user.setIsLocked(true);
+                        user.setAccountLockedUntil(new Timestamp(now.getTime() + 30 * 60 * 1000));
+                        request.setAttribute("errorMessage", "登录失败5次，账号已锁定30分钟");
+                    } else {
+                        AuditLogFilter.log(request, "登录", "系统", "失败", "用户名或密码错误，失败次数: " + failCount);
+                        request.setAttribute("errorMessage", "用户名或密码错误，您已失败 " + failCount + " 次");
+                    }
                 }
             }
             UserDao.updateUser(user);
@@ -77,6 +83,7 @@ public class LoginServlet extends HttpServlet {
             return;
         }
         else {
+            AuditLogFilter.log(request, "登录", "系统", "失败", "用户不存在");
             request.setAttribute("errorMessage", "用户不存在");
             request.getRequestDispatcher("/login.jsp").forward(request, response);
         }

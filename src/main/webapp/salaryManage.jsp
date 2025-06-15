@@ -13,46 +13,135 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 40px;
         }
+
         .container {
             display: flex;
-            gap: 20px;
+            gap: 30px;
+            max-width: 1300px;
+            margin: 0 auto;
         }
+
+        .left-panel, .right-panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
         .left-panel {
-            flex: 2;  /* 左边宽度占比 */
+            flex: 2;
         }
+
         .right-panel {
-            flex: 1;  /* 右边宽度占比 */
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
+            flex: 1;
+            position: sticky;
+            top: 40px;
             height: fit-content;
-            background: #f9f9f9;
         }
-        /* 查询表单和表格之间间距 */
+
+        h2, h3 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        button, input[type="submit"] {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover, input[type="submit"]:hover {
+            background-color: #1976d2;
+        }
+
+        a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
         .search-form {
             margin-bottom: 20px;
-            padding: 10px;
-            background: #e8f0fe;
-            border-radius: 5px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
         }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-        th, td {
+
+        .search-form input[type="text"],
+        .search-form input[type="date"] {
             padding: 6px 10px;
-            border: 1px solid #999;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
             text-align: center;
+            font-size: 14px;
         }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
         tr:nth-child(even) {
-            background: #eeeeff;
+            background-color: #f9f9f9;
         }
+
         tr:nth-child(odd) {
-            background: #dedeff;
+            background-color: #ffffff;
         }
+
         fieldset {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px 15px;
             margin-bottom: 15px;
+            background-color: #fcfcfc;
+        }
+
+        legend {
+            font-weight: bold;
+            color: #333;
+            padding: 0 5px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 6px 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -65,7 +154,7 @@
         <form action="SalaryQueryServlet" method="post" class="search-form">
             姓名：<input type="text" name="staffName" />
             部门：<input type="text" name="department" />
-            月份：<input type="text" name="salaryMonth" placeholder="YYYY-MM" />
+            时间：<input type="date" name="start"> ~ <input type="date" name="end">
             <input type="submit" value="查询" />
         </form>
 

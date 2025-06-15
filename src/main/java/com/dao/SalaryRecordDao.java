@@ -80,19 +80,45 @@ public class SalaryRecordDao extends BaseDao{
         return list;
     }
 
-    public List<SalaryView> FuzzyfindWithStaffInfo(String staffName, String departmentName, String salaryMonth) {
-        String sql= "SELECT sr.*, s.name AS staff_name, d.name AS department_name " +
-                "FROM salary_record sr " +
-                "JOIN staff s ON sr.staff_code = s.staff_code " +
-                "JOIN department d ON s.department_id = d.id " +
-                "WHERE s.name LIKE ? AND d.name LIKE ? AND sr.salary_month LIKE ? " +
-                "ORDER BY sr.salary_month DESC";
+    public List<SalaryView> FuzzyfindWithStaffInfo(String staffName, String departmentName, String startDate, String endDate) {
         List<SalaryView> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+                "SELECT sr.*, s.name AS staff_name, d.name AS department_name " +
+                        "FROM salary_record sr " +
+                        "JOIN staff s ON sr.staff_code = s.staff_code " +
+                        "JOIN department d ON s.department_id = d.id " +
+                        "WHERE 1=1 "
+        );
+        List<Object> params = new ArrayList<>();
+
+        // 动态拼接条件
+        if (staffName != null && !staffName.trim().isEmpty()) {
+            sql.append("AND s.name LIKE ? ");
+            params.add("%" + staffName.trim() + "%");
+        }
+        if (departmentName != null && !departmentName.trim().isEmpty()) {
+            sql.append("AND d.name LIKE ? ");
+            params.add("%" + departmentName.trim() + "%");
+        }
+        if (startDate != null && !startDate.trim().isEmpty()) {
+            sql.append("AND sr.salary_month >= ? ");
+            params.add(startDate.trim());
+        }
+        if (endDate != null && !endDate.trim().isEmpty()) {
+            sql.append("AND sr.salary_month <= ? ");
+            params.add(endDate.trim());
+        }
+
+        sql.append("ORDER BY sr.salary_month DESC");
+
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, "%" + staffName + "%");
-            ps.setString(2, "%" + departmentName + "%");
-            ps.setString(3, "%" + salaryMonth + "%");
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            // 设置动态参数
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     SalaryView view = new SalaryView();
@@ -118,40 +144,8 @@ public class SalaryRecordDao extends BaseDao{
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return list;
-    }
-
-    public boolean addSalary(String staffName, String departmentName, String salaryMonth, BigDecimal baseSalary, BigDecimal positionAllowance, BigDecimal lunchAllowance, BigDecimal overtimePay, BigDecimal fullAttendanceBonus, BigDecimal socialInsurance, BigDecimal housingFund, BigDecimal personalIncomeTax, BigDecimal leaveDeduction, BigDecimal actualSalary) {
-        String sql = "INSERT INTO salary_record (staff_code, salary_month, base_salary, position_allowance, " +
-                "lunch_allowance, overtime_pay, full_attendance_bonus, social_insurance, housing_fund, " +
-                "personal_income_tax, leave_deduction, actual_salary, created_at) " +
-                "SELECT s.staff_code, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW() " +
-                "FROM staff s " +
-                "JOIN department d ON s.department_id = d.id " +
-                "WHERE s.name = ? AND d.name = ?";
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps= conn.prepareStatement(sql)) {
-            LocalDate firstDay = LocalDate.parse(salaryMonth + "-01");
-            Timestamp sMonth = Timestamp.valueOf(firstDay.atStartOfDay());
-            ps.setTimestamp(1,sMonth);
-            ps.setBigDecimal(2, baseSalary);
-            ps.setBigDecimal(3, positionAllowance);
-            ps.setBigDecimal(4, lunchAllowance);
-            ps.setBigDecimal(5, overtimePay);
-            ps.setBigDecimal(6, fullAttendanceBonus);
-            ps.setBigDecimal(7, socialInsurance);
-            ps.setBigDecimal(8, housingFund);
-            ps.setBigDecimal(9, personalIncomeTax);
-            ps.setBigDecimal(10, leaveDeduction);
-            ps.setBigDecimal(11, actualSalary);
-            ps.setString(12, staffName);
-            ps.setString(13, departmentName);
-            int result = ps.executeUpdate();
-            return result > 0;
-
-        } catch (SQLException e) {
-           return false;
-        }
     }
 
     public SalaryRecord findById(int id) {
@@ -184,7 +178,7 @@ public class SalaryRecordDao extends BaseDao{
         return null;
     }
 
-    public boolean updateSalary(String staffName, String departmentName, String salaryMonth, BigDecimal baseSalary, BigDecimal positionAllowance, BigDecimal lunchAllowance, BigDecimal overtimePay, BigDecimal fullAttendanceBonus, BigDecimal socialInsurance, BigDecimal housingFund, BigDecimal personalIncomeTax, BigDecimal leaveDeduction, BigDecimal actualSalary) {
+    public boolean addSalary(String staffName, String departmentName, String salaryMonth, BigDecimal baseSalary, BigDecimal positionAllowance, BigDecimal lunchAllowance, BigDecimal overtimePay, BigDecimal fullAttendanceBonus, BigDecimal socialInsurance, BigDecimal housingFund, BigDecimal personalIncomeTax, BigDecimal leaveDeduction, BigDecimal actualSalary) {
         String sql = "UPDATE salary_record SET base_salary = ?, position_allowance = ?, lunch_allowance = ?, " +
                 "overtime_pay = ?, full_attendance_bonus = ?, social_insurance = ?, housing_fund = ?, " +
                 "personal_income_tax = ?, leave_deduction = ?, actual_salary = ? " +
@@ -228,5 +222,37 @@ public class SalaryRecordDao extends BaseDao{
     } catch (SQLException e) {
         e.printStackTrace();
         return false;}
+    }
+
+
+    public boolean updateSalary(String staffCode, String staffName, String salaryMonth, BigDecimal baseSalary, BigDecimal positionAllowance, BigDecimal lunchAllowance, BigDecimal overtimePay, BigDecimal fullAttendanceBonus, BigDecimal socialInsurance, BigDecimal housingFund, BigDecimal personalIncomeTax, BigDecimal leaveDeduction, BigDecimal actualSalary) {
+        String sql = "UPDATE salary_record SET base_salary = ?, position_allowance = ?, lunch_allowance = ?, " +
+                "overtime_pay = ?, full_attendance_bonus = ?, social_insurance = ?, housing_fund = ?, " +
+                "personal_income_tax = ?, leave_deduction = ?, actual_salary = ? " +
+                "WHERE staff_code = ? AND salary_month = ?";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps= conn.prepareStatement(sql)) {
+            LocalDate firstDay = LocalDate.parse(salaryMonth);
+            Timestamp sMonth = Timestamp.valueOf(firstDay.atStartOfDay());
+            ps.setBigDecimal(1, baseSalary);
+            ps.setBigDecimal(2, positionAllowance);
+            ps.setBigDecimal(3, lunchAllowance);
+            ps.setBigDecimal(4, overtimePay);
+            ps.setBigDecimal(5, fullAttendanceBonus);
+            ps.setBigDecimal(6, socialInsurance);
+            ps.setBigDecimal(7, housingFund);
+            ps.setBigDecimal(8, personalIncomeTax);
+            ps.setBigDecimal(9, leaveDeduction);
+            ps.setBigDecimal(10, actualSalary);
+            ps.setInt(11, Integer.parseInt(staffCode));
+            ps.setTimestamp(12, sMonth);
+
+            int result = ps.executeUpdate();
+            return result > 0;
+
+        } catch (SQLException e) {
+           return false;
+        }
     }
 }

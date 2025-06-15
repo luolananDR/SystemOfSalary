@@ -17,10 +17,47 @@
     <meta charset="UTF-8">
     <title>人员工资管理系统 - 控制台</title>
     <style>
-        body { font-family: Arial; padding: 20px; }
-        h2 { color: #2e6da4; }
-        .menu { margin: 20px 0; }
-        .menu button { margin: 5px; padding: 10px 20px; }
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+        }
+
+        h2 {
+            color: #2e6da4;
+            margin-bottom: 30px;
+        }
+
+        .menu {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .menu button {
+            background-color: #337ab7;
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu button:hover {
+            background-color: #23527c;
+        }
+
+        .menu p {
+            color: red;
+            font-weight: bold;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -36,7 +73,6 @@
     <!-- 人事管理员权限 -->
     <c:if test="${role == 'admin' or role eq 'hr'}">
         <button onclick="location.href='StaffServlet'">人员管理</button>
-        <button onclick="location.href='specialDeduction.jsp'">专项附加扣除</button>
     </c:if>
 
     <!-- 财务管理员权限 -->
@@ -53,7 +89,7 @@
 
     <!-- 审计员权限 -->
     <c:if test="${role =='audit' or role =='admin'}">
-    <button onclick="location.href='logQuery.jsp'">日志审计</button>
+    <button onclick="location.href='AuditLogQueryServlet'">日志审计</button>
     </c:if>
     <c:if test="${role == 'unauthorized'}">
         <p>您没有权限访问此系统，请联系管理员。</p>

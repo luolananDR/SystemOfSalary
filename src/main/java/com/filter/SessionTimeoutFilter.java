@@ -25,7 +25,7 @@ public class SessionTimeoutFilter implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        HttpSession session = req.getSession(false);
+
 
         String uri = req.getRequestURI();
 
@@ -34,7 +34,7 @@ public class SessionTimeoutFilter implements Filter {
             chain.doFilter(request, response);
             return;
         }
-
+        HttpSession session = req.getSession(false);
         if (session == null || session.getAttribute("username") == null ) {
             // 未登录
             res.sendRedirect(req.getContextPath() + "/login.jsp");

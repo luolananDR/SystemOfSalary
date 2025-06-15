@@ -32,9 +32,10 @@ public class SalaryQueryServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String staffName = request.getParameter("staffName");
         String departmentName = request.getParameter("department");
-        String salaryMonth = request.getParameter("salaryMonth");
+        String startDate = request.getParameter("start");
+        String endDate = request.getParameter("end");
         SalaryRecordDao salaryDAO = new SalaryRecordDao();
-        List<SalaryView> salary = salaryDAO.FuzzyfindWithStaffInfo(staffName, departmentName, salaryMonth);
+        List<SalaryView> salary = salaryDAO.FuzzyfindWithStaffInfo(staffName, departmentName, startDate, endDate);
         request.setAttribute("salary", salary);
         RequestDispatcher rd = getServletContext().getRequestDispatcher("/salaryManage.jsp");
         rd.forward(request, response);

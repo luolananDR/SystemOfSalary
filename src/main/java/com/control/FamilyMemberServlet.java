@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.dao.FamilyMemberDao;
 import com.dao.StaffDao;
+import com.filter.AuditLogFilter;
 import com.model.FamilyMember;
 import com.model.Staff;
 import jakarta.servlet.ServletException;
@@ -23,7 +24,7 @@ public class FamilyMemberServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         String staffCode = request.getParameter("staffCode");
-
+        AuditLogFilter.log(request, "查询", "家人信息", "成功", "通过过滤器记录");
         if ("list".equals(action)) {
             Staff staff = staffDao.getStaffByStaffCode(staffCode);
             List<FamilyMember> familyMembers = familyMemberDao.getFamilyMembersByStaffCode(staffCode);
@@ -40,6 +41,7 @@ public class FamilyMemberServlet extends HttpServlet {
 
         if ("add".equals(action)) {
             // 添加新家庭成员
+            AuditLogFilter.log(request, "添加", "家人信息", "成功", "通过过滤器记录");
             FamilyMember member = new FamilyMember();
             member.setStaffCode(Integer.valueOf(staffCode));
             member.setName(request.getParameter("name"));
@@ -48,11 +50,11 @@ public class FamilyMemberServlet extends HttpServlet {
             member.setBirthDate(Date.valueOf(request.getParameter("birthDate")));
             member.setIsStudent(Boolean.valueOf(request.getParameter("isStudent")));
             member.setIsMajorDisease(Boolean.valueOf(request.getParameter("isMajorDisease")));
-
             familyMemberDao.addFamilyMember(member);
 
         } else if ("delete".equals(action)) {
             // 删除家庭成员
+            AuditLogFilter.log(request, "删除", "家人信息", "成功", "通过过滤器记录");
             String memberId = request.getParameter("memberId");
             familyMemberDao.deleteFamilyMember(memberId);
         }

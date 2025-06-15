@@ -87,12 +87,12 @@
         <input type="password" name="oldPassword" id="oldPassword" required>
 
         <label for="newPassword">新密码：</label>
-        <input type="password" name="newPassword" id="newPassword" required>
+        <input type="password" name="password" id="newPassword" required>
 
         <label for="confirmPassword">确认新密码：</label>
         <input type="password" name="confirmPassword" id="confirmPassword" required>
 
-        <button type="submit" class="button">提交修改</button>
+        <input type="submit" value="提交修改" class="button">
     </form>
     <c:if test="${not empty errorMessage}">
         <p style="color:red">${errorMessage}</p>
@@ -100,29 +100,35 @@
     <c:if test="${not empty successMessage}">
         <p style="color:green">${successMessage}</p>
     </c:if>
+
+</div>
 <script>
-        // 简单的表单验证
-        document.querySelector('form').addEventListener('submit', function(event) {
-            const password = document.querySelector('input[name="newPassword"]').value;
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelector('form').addEventListener('submit', function (event) {
+            const password = document.querySelector('input[name="password"]').value;
             const confirmPassword = document.querySelector('input[name="confirmPassword"]').value;
-            const oldpassword =document.querySelector('input[name="oldPassword"]').value;
+            const oldpassword = document.querySelector('input[name="oldPassword"]').value;
+
             if (password !== confirmPassword) {
                 event.preventDefault();
                 alert("密码和确认密码不一致！");
+                return;
             }
-            //密码校验，至少8位包含数字，大小写字母和特殊字符
+
             const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
             if (!passwordRegex.test(password)) {
                 event.preventDefault();
                 alert("密码必须至少8位，包含数字，大小写字母和特殊字符！");
+                return;
             }
-            //新旧密码不能相同
-            if(password==oldpassword){
-                alert("新旧密码不能相同");
+
+            if (password === oldpassword) {
+                event.preventDefault();
+                alert("新旧密码不能相同！");
             }
         });
-
- </script>
-</div>
+    });
+</script>
 </body>
 </html>
+

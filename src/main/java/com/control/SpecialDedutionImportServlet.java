@@ -3,6 +3,7 @@ package com.control;
 import com.dao.FamilyMemberDao;
 import com.dao.SpecialDeductionDao;
 import com.dao.StaffDao;
+import com.filter.AuditLogFilter;
 import com.model.FamilyMember;
 import com.model.SpecialDeduction;
 import com.model.Staff;
@@ -23,6 +24,7 @@ public class SpecialDedutionImportServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
        request.setCharacterEncoding("UTF-8");
+        AuditLogFilter.log(request, "查询", "个人专项附加扣除信息", "成功", "通过过滤器记录");
         String staffCode = request.getParameter("staffCode");
         FamilyMemberDao familyDao = new FamilyMemberDao();
         SpecialDeductionDao deductionDao = new SpecialDeductionDao();
@@ -60,6 +62,7 @@ public class SpecialDedutionImportServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String staffCode = request.getParameter("staffCode");
+        AuditLogFilter.log(request, "修改", "个人专项附加扣除信息", "成功", "通过过滤器记录");
         BigDecimal childEducation = getBigDecimalParam(request, "childEducation");
        String continueEducation = request.getParameter("continueEducation");
        String housingLoanInterest = request.getParameter("housingLoanInterest");

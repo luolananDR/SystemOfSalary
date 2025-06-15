@@ -26,7 +26,7 @@ public class PasswordPolicyFilter implements Filter {
             Timestamp lastChange = user.getLastPasswordChange();
             if (lastChange != null && Duration.between(lastChange.toInstant(), Instant.now()).toDays() > 90) {
                 session.setAttribute("errorMessage", "密码超过90天未更换，请重置密码");
-                res.sendRedirect("/changePassword.jsp");
+                res.sendRedirect(req.getContextPath()+"/changePassword.jsp");
                 return;
             }
 

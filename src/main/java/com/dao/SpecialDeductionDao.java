@@ -7,30 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class SpecialDeductionDao extends BaseDao{
-    public SpecialDeduction getspecialDeductionBystaffCode(Integer staffCode) {
-        String sql = "SELECT * FROM special_deduction WHERE staff_code = ?";
-        try (Connection cn = dataSource.getConnection();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setInt(1, staffCode);
-            var rs = ps.executeQuery();
-            if (rs.next()) {
-                SpecialDeduction deduction = new SpecialDeduction();
-                deduction.setId(rs.getInt("id"));
-                deduction.setStaffCode(rs.getInt("staff_code"));
-                deduction.setChildEducation(rs.getBigDecimal("child_education"));
-                deduction.setContinueEducation(rs.getBigDecimal("continue_education"));
-                deduction.setHousingLoanInterest(rs.getBigDecimal("housing_loan_interest"));
-                deduction.setHousingRent(rs.getBigDecimal("housing_rent"));
-                deduction.setElderlySupport(rs.getBigDecimal("elderly_support"));
-                deduction.setSeriousIllness(rs.getBigDecimal("serious_illness"));
-                deduction.setCreatedAt(rs.getTimestamp("created_at"));
-                return deduction;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
 
 
