@@ -28,7 +28,6 @@ public class FamilyMemberServlet extends HttpServlet {
         if ("list".equals(action)) {
             Staff staff = staffDao.getStaffByStaffCode(staffCode);
             List<FamilyMember> familyMembers = familyMemberDao.getFamilyMembersByStaffCode(staffCode);
-
             request.setAttribute("staff", staff);
             request.setAttribute("familyMembers", familyMembers);
             request.getRequestDispatcher("familyManage.jsp").forward(request, response);

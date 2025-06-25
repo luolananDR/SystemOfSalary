@@ -45,14 +45,14 @@ public class SalaryImportServlet extends HttpServlet {
                 }
             }
             if(successCount==0){
-                request.setAttribute("msg", "导入失败！");
+                request.setAttribute("msg", "导入失败,某一条工资出错!");
                 request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
                 return;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("msg", "导入失败，服务器异常！");
+            request.setAttribute("msg", "导入失败，请先更新个人专项附加扣除！");
             request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
         } request.setAttribute("msg", "导入成功！");
         request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);

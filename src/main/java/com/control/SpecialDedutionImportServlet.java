@@ -102,55 +102,6 @@ public class SpecialDedutionImportServlet extends HttpServlet {
             deduction.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             if (deductionDao.add(deduction)) {
                 AuditLogFilter.log(request, "添加", "个人专项附加扣除信息", "成功", "通过过滤器记录");
-                SalaryRecordDao salaryDAO = new SalaryRecordDao();
-                SalaryRecord salaryRecord = salaryDAO.getByStaffCode(staffCode);
-                String salaryMonth = String.valueOf(salaryRecord.getSalaryMonth());
-                BigDecimal baseSalary = salaryRecord.getBaseSalary();
-                BigDecimal positionAllowance = salaryRecord.getPositionAllowance();
-                BigDecimal lunchAllowance = salaryRecord.getLunchAllowance();
-                BigDecimal overtimePay = salaryRecord.getOvertimePay();
-                BigDecimal fullAttendanceBonus = salaryRecord.getFullAttendanceBonus();
-                BigDecimal socialInsurance = salaryRecord.getSocialInsurance();
-                BigDecimal housingFund = salaryRecord.getHousingFund();
-                BigDecimal leaveDeduction = salaryRecord.getLeaveDeduction();
-                // 2. 计算应发工资
-                BigDecimal totalSalary = baseSalary
-                        .add(positionAllowance)
-                        .add(lunchAllowance)
-                        .add(overtimePay)
-                        .add(fullAttendanceBonus);
-
-                // 3. 获取专项附加扣除
-
-                BigDecimal specialDeduction = (deduction != null) ? deduction.getTotalDeduction() : BigDecimal.ZERO;
-
-                // 4. 应纳税所得额
-                BigDecimal taxableIncome = totalSalary
-                        .subtract(socialInsurance)
-                        .subtract(housingFund)
-                        .subtract(BigDecimal.valueOf(5000))
-                        .subtract(specialDeduction);
-
-                if (taxableIncome.compareTo(BigDecimal.ZERO) < 0) {
-                    taxableIncome = BigDecimal.ZERO;
-                }
-
-                // 5. 个税
-                BigDecimal personalIncomeTax = calculateMonthlyTax(taxableIncome);
-
-                // 6. 实发工资
-                BigDecimal actualSalary = totalSalary
-                        .subtract(socialInsurance)
-                        .subtract(housingFund)
-                        .subtract(personalIncomeTax)
-                        .subtract(leaveDeduction);
-
-                boolean isSuccess = salaryDAO.updateSalary(staffCode,
-                        salaryMonth,
-                        baseSalary, positionAllowance, lunchAllowance,
-                        overtimePay, fullAttendanceBonus, socialInsurance,
-                        housingFund, personalIncomeTax, leaveDeduction, actualSalary);
-
                 request.setAttribute("msg", "个人专项附加扣除保存成功！");
                 request.getRequestDispatcher("/salaryResult.jsp").forward(request, response);
                 return;

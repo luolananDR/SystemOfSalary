@@ -5,83 +5,87 @@
 <head>
     <title>用户管理</title>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="sidebar.css">
 </head>
 <body>
-<div class="container">
-    <h1>用户管理</h1>
-
-    <table>
-        <thead>
-        <tr>
-            <th>用户名</th>
-            <th>真实姓名</th>
-            <th>电话号码</th>
-            <th>地址</th>
-            <th>角色</th>
-            <th>操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="user" items="${users}">
+<jsp:include page="sidebar.jsp" />
+<div class="main">
+    <div class="container">
+        <h1>用户管理</h1>
+        <table>
+            <thead>
             <tr>
-                <td>${user.username}</td>
-                <td>${user.realName}</td>
-                <td>${user.phone}</td>
-                <td>${user.address}</td>
-                <td>
-                        <span class="role-badge role-${user.roleId}">
-                            <c:choose>
-                                <c:when test="${user.roleId == 1}">人事管理员</c:when>
-                                <c:when test="${user.roleId == 2}">财务管理员</c:when>
-                                <c:when test="${user.roleId == 3}">总经理</c:when>
-                                <c:when test="${user.roleId == 4}">系统管理员</c:when>
-                                <c:when test="${user.roleId == 5}">审计员</c:when>
-                                <c:otherwise>无权限</c:otherwise>
-                            </c:choose>
-                        </span>
-                </td>
-                <td class="action-buttons">
-                    <button class="btn btn-edit"
-                            onclick="openEditModal('${user.id}', ${user.roleId})">
-                        编辑权限
-                    </button>
-                </td>
+                <th>用户名</th>
+                <th>真实姓名</th>
+                <th>电话号码</th>
+                <th>地址</th>
+                <th>角色</th>
+                <th>操作</th>
             </tr>
-        </c:forEach>
-        <c:if test="${empty users}">
-            <tr>
-                <td colspan="6" style="text-align: center;">暂无用户数据</td>
-            </tr>
-        </c:if>
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+            <c:forEach var="user" items="${users}">
+                <tr>
+                    <td>${user.username}</td>
+                    <td>${user.realName}</td>
+                    <td>${user.phone}</td>
+                    <td>${user.address}</td>
+                    <td>
+                            <span class="role-badge role-${user.roleId}">
+                                <c:choose>
+                                    <c:when test="${user.roleId == 1}">人事管理员</c:when>
+                                    <c:when test="${user.roleId == 2}">财务管理员</c:when>
+                                    <c:when test="${user.roleId == 3}">总经理</c:when>
+                                    <c:when test="${user.roleId == 4}">系统管理员</c:when>
+                                    <c:when test="${user.roleId == 5}">审计员</c:when>
+                                    <c:otherwise>无权限</c:otherwise>
+                                </c:choose>
+                            </span>
+                    </td>
+                    <td class="action-buttons">
+                        <button class="btn btn-edit"
+                                onclick="openEditModal('${user.id}', ${user.roleId})">
+                            编辑权限
+                        </button>
+                    </td>
+                </tr>
+            </c:forEach>
+            <c:if test="${empty users}">
+                <tr>
+                    <td colspan="6" style="text-align: center;">暂无用户数据</td>
+                </tr>
+            </c:if>
+            </tbody>
+        </table>
 
-<!-- 权限编辑模态框 -->
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="document.getElementById('editModal').style.display='none'">&times;</span>
-        <h2>编辑用户权限</h2>
-        <form id="editForm" action="UserServlet" method="post">
-            <input type="hidden" name="action" value="updateRole">
-            <input type="hidden" id="editUserId" name="userId">
-            <div class="form-group">
-                <label for="roleSelect">选择角色</label>
-                <select id="roleSelect" name="roleId" class="form-control">
-                    <option value="1">人事管理员</option>
-                    <option value="2">财务管理员</option>
-                    <option value="3">总经理</option>
-                    <option value="4">系统管理员</option>
-                    <option value="5">审计员</option>
-                    <option value="-1">无权限</option>
-                </select>
-            </div>
+    </div>
 
-            <div class="form-actions">
-                <button type="button" class="btn" onclick="document.getElementById('editModal').style.display='none'">取消</button>
-                <button type="submit" class="btn btn-edit">保存</button>
-            </div>
-        </form>
+    <!-- 权限编辑模态框 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('editModal').style.display='none'">&times;</span>
+            <h2>编辑用户权限</h2>
+            <form id="editForm" action="UserServlet" method="post">
+                <input type="hidden" name="action" value="updateRole">
+                <input type="hidden" id="editUserId" name="userId">
+                <div class="form-group">
+                    <label for="roleSelect">选择角色</label>
+                    <select id="roleSelect" name="roleId" class="form-control">
+                        <option value="1">人事管理员</option>
+                        <option value="2">财务管理员</option>
+                        <option value="3">总经理</option>
+                        <option value="4">系统管理员</option>
+                        <option value="5">审计员</option>
+                        <option value="-1">无权限</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn" onclick="document.getElementById('editModal').style.display='none'">取消</button>
+                    <button type="submit" class="btn btn-edit">保存</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -105,11 +109,6 @@
 </html>
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        background-color: #f5f5f5;
-    }
     .container {
         max-width: 1200px;
         margin: 0 auto;
@@ -233,5 +232,8 @@
     .form-actions {
         text-align: right;
         margin-top: 20px;
+    }
+    .sidebar-button:nth-child(1){
+        background-color: #1ABC9C;
     }
 </style>

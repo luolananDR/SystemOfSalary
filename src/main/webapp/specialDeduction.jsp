@@ -10,13 +10,8 @@
 <html>
 <head>
     <title>个人专项附加扣除</title>
+    <link rel="stylesheet" type="text/css" href="sidebar.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f5f5f5;
-        }
-
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -84,48 +79,54 @@
         a:hover {
             background-color: #5a6268;
         }
+        .sidebar-button:nth-child(2){
+            background-color: #1ABC9C;
+        }
     </style>
 </head>
 <body>
-<div class="container">
-    <h2>专项附加扣除信息</h2>
+<jsp:include page="sidebar.jsp" />
+<div class="main">
+    <div class="container">
+        <h2>专项附加扣除信息</h2>
 
-    <p><strong>员工姓名：</strong>${staff.getName()}</p>
-    <p><strong>员工编号：</strong>${ staff.getStaffCode() }</p>
+        <p><strong>员工姓名：</strong>${staff.getName()}</p>
+        <p><strong>员工编号：</strong>${ staff.getStaffCode() }</p>
 
-    <form action="SpecialDedutionImportServlet" method="post">
-        <input type="hidden" name="staffCode" value="${deduction.staffCode}">
+        <form action="SpecialDedutionImportServlet" method="post">
+            <input type="hidden" name="staffCode" value="${deduction.staffCode}">
 
-        <label>子女教育：(元)</label>
-        <input type="text" name="childEducation" value="${deduction.childEducation}">
+            <label>子女教育：(元)</label>
+            <input type="text" name="childEducation" value="${deduction.childEducation}">
 
-        <label>继续教育：(元)</label>
-        <select name="continueEducation">
-            <option value="无">无</option>
-            <option value="有">有（400元）</option>
-        </select>
+            <label>继续教育：(元)</label>
+            <select name="continueEducation">
+                <option value="无">无</option>
+                <option value="有">有（400元）</option>
+            </select>
 
-        <label>住房贷款：(元)</label>
-        <select name="housingLoanInterest">
-            <option value="无" >无</option>
-            <option value="有" >有（1000元）</option>
-        </select>
+            <label>住房贷款：(元)</label>
+            <select name="housingLoanInterest">
+                <option value="无" >无</option>
+                <option value="有" >有（1000元）</option>
+            </select>
 
-        <label>住房租金：(元)</label>
-        <select name="housingRent">
-            <option value="无" >无</option>
-            <option value="有" >有（1500元）</option>
-        </select>
+            <label>住房租金：(元)</label>
+            <select name="housingRent">
+                <option value="无" >无</option>
+                <option value="有" >有（1500元）</option>
+            </select>
 
-        <label>赡养老人：(元)</label>
-        <input type="text" name="elderlySupport" value="${deduction.elderlySupport}">
+            <label>赡养老人：(元)</label>
+            <input type="text" name="elderlySupport" value="${deduction.elderlySupport}">
 
-        <label>大病医疗：(元)</label>
-        <input type="text" name="seriousIllness" value="${deduction.seriousIllness}">
+            <label>大病医疗：(元)</label>
+            <input type="text" name="seriousIllness" value="${deduction.seriousIllness}">
 
-        <button type="submit">保存修改</button>
-        <a href="javascript:history.back();">返回</a>
-    </form>
+            <button type="submit">保存修改</button>
+            <a href="javascript:history.back();">返回</a>
+        </form>
+    </div>
 </div>
 </body>
 </html>

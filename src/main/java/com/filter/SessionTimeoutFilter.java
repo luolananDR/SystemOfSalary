@@ -18,15 +18,14 @@ import java.util.Map;
 @WebFilter("/*") // 拦截所有请求
 public class SessionTimeoutFilter implements Filter {
     // 超时时间（毫秒）: 30分钟
-    private static final long TIMEOUT = 30 * 60 * 1000;
+    private static final long TIMEOUT = //1000;
+                                         30 * 60 * 1000;
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-
-
         String uri = req.getRequestURI();
 
         // 排除登录页面、静态资源等
@@ -53,7 +52,6 @@ public class SessionTimeoutFilter implements Filter {
 
         // 更新操作时间
         session.setAttribute("lastAccessTime", now);
-
         chain.doFilter(request, response);
     }
 }

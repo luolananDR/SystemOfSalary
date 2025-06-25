@@ -13,144 +13,146 @@
 <head>
     <meta charset="UTF-8">
     <title>员工管理系统 - HR管理</title>
+    <link rel="stylesheet" type="text/css" href="sidebar.css">
 </head>
 <body>
-<div class="container">
-    <h1>员工管理系统</h1>
-<%--    <p>欢迎, <%= currentUser.getUsername() %> (HR)</p>--%>
+<jsp:include page="sidebar.jsp" />
+<div class="main">
+    <div class="container">
+        <h1>员工管理</h1>
+        <button class="btn btn-add" onclick="document.getElementById('addModal').style.display='block'">添加新员工</button>
+        <table>
+            <thead>
+            <tr>
+                <th>员工编号</th>
+                <th>姓名</th>
+                <th>部门</th>
+                <th>岗位</th>
+                <th>身份证号</th>
+                <th>手机号</th>
+                <th>住址</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%
+                List<Staff> staffList = (List<Staff>) request.getAttribute("staffList");
 
-    <button class="btn btn-add" onclick="document.getElementById('addModal').style.display='block'">添加新员工</button>
-
-    <table>
-        <thead>
-        <tr>
-            <th>员工编号</th>
-            <th>姓名</th>
-            <th>部门</th>
-            <th>岗位</th>
-            <th>身份证号</th>
-            <th>手机号</th>
-            <th>住址</th>
-            <th>操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        <%
-            List<Staff> staffList = (List<Staff>) request.getAttribute("staffList");
-
-            if (staffList != null && !staffList.isEmpty()) {
-                for (Staff staff : staffList) {
-        %>
-        <tr>
-            <td><%= staff.getStaffCode() %></td>
-            <td><%= staff.getName() %></td>
-            <td><%= staff.getDepartmentId() %></td>
-            <td><%= staff.getPosition() %></td>
-            <td><%= staff.getIdNumber() != null ? staff.getIdNumber().replaceAll("(\\d{4})\\d{10}(\\w{4})", "$1**********$2") : ""%></td>
-            <td><%= staff.getPhone() != null ? staff.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2") : "" %></td>
-            <td><%= staff.getAddress() %></td>
-            <td class="action-buttons">
-                <button class="btn btn-edit" onclick="document.getElementById('editModal').style.display='block'; loadStaffData('<%= staff.getStaffCode() %>')">编辑</button>
-                <form action="StaffServlet" method="post" style="display:inline;">
-                    <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="staffId" value="<%= staff.getStaffCode() %>">
-                    <button type="submit" class="btn btn-delete" onclick="return confirm('确定要删除员工 <%= staff.getName() %> 吗？')">删除</button>
-                </form>
-                <a href="FamilyMemberServlet?action=list&staffCode=<%= staff.getStaffCode() %>" class="btn btn-family">管理家庭</a>
-            </td>
-        </tr>
-        <%
-            }
-        } else {
-        %>
-        <tr>
-            <td colspan="8" style="text-align: center;">暂无员工数据</td>
-        </tr>
-        <% } %>
-        </tbody>
-    </table>
-</div>
-
-<!-- 添加员工模态框 -->
-<div id="addModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="document.getElementById('addModal').style.display='none'">&times;</span>
-        <h2>添加新员工</h2>
-        <form action="StaffServlet" method="post">
-            <input type="hidden" name="action" value="add">
-            <div class="form-group">
-                <label for="addName">姓名</label>
-                <input type="text" id="addName" name="name" required>
-            </div>
-            <div class="form-group">
-                <label for="addDepartment">部门</label>
-                <input type="text" id="addDepartment" name="department" required>
-            </div>
-            <div class="form-group">
-                <label for="addPosition">岗位</label>
-                <input type="text" id="addPosition" name="position" required>
-            </div>
-            <div class="form-group">
-                <label for="addPosition">工号</label>
-                <input type="text" id="addStaffCode" name="staffCode" required>
-            </div>
-            <div class="form-group">
-                <label for="addIdNumber">身份证号</label>
-                <input type="text" id="addIdNumber" name="idNumber" required pattern="\d{18}">
-            </div>
-            <div class="form-group">
-                <label for="addPhone">手机号</label>
-                <input type="tel" id="addPhone" name="phone" required pattern="\d{11}">
-            </div>
-            <div class="form-group">
-                <label for="addAddress">住址</label>
-                <input type="text" id="addAddress" name="address" required>
-            </div>
-            <div class="form-actions">
-                <button type="button" class="btn" onclick="document.getElementById('addModal').style.display='none'">取消</button>
-                <button type="submit" class="btn btn-edit">保存</button>
-            </div>
-        </form>
+                if (staffList != null && !staffList.isEmpty()) {
+                    for (Staff staff : staffList) {
+            %>
+            <tr>
+                <td><%= staff.getStaffCode() %></td>
+                <td><%= staff.getName() %></td>
+                <td><%= staff.getDepartmentId() %></td>
+                <td><%= staff.getPosition() %></td>
+                <td><%= staff.getIdNumber() != null ? staff.getIdNumber().replaceAll("(\\d{4})\\d{10}(\\w{4})", "$1**********$2") : ""%></td>
+                <td><%= staff.getPhone() != null ? staff.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2") : "" %></td>
+                <td><%= staff.getAddress() %></td>
+                <td class="action-buttons">
+                    <button class="btn btn-edit" onclick="document.getElementById('editModal').style.display='block'; loadStaffData('<%= staff.getStaffCode() %>')">编辑</button>
+                    <form action="StaffServlet" method="post" style="display:inline;">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="staffId" value="<%= staff.getStaffCode() %>">
+                        <button type="submit" class="btn btn-delete" onclick="return confirm('确定要删除员工 <%= staff.getName() %> 吗？')">删除</button>
+                    </form>
+                    <a href="FamilyMemberServlet?action=list&staffCode=<%= staff.getStaffCode() %>" class="btn btn-family">管理家庭</a>
+                </td>
+            </tr>
+            <%
+                }
+            } else {
+            %>
+            <tr>
+                <td colspan="8" style="text-align: center;">暂无员工数据</td>
+            </tr>
+            <% } %>
+            </tbody>
+        </table>
     </div>
-</div>
 
-<!-- 编辑员工模态框 -->
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="document.getElementById('editModal').style.display='none'">&times;</span>
-        <h2>编辑员工信息</h2>
-        <form action="StaffServlet" method="post">
-            <input type="hidden" name="action" value="update">
-            <input type="hidden" id="editStaffCode" name="staffCode">
-            <div class="form-group">
-                <label for="editName">姓名</label>
-                <input type="text" id="editName" name="name" required>
-            </div>
-            <div class="form-group">
-                <label for="editDepartment">部门</label>
-                <input type="text" id="editDepartment" name="department" required>
-            </div>
-            <div class="form-group">
-                <label for="editPosition">岗位</label>
-                <input type="text" id="editPosition" name="position" required>
-            </div>
-            <div class="form-group">
-                <label for="editIdNumber">身份证号</label>
-                <input type="text" id="editIdNumber" name="idNumber" required pattern="\d{18}">
-            </div>
-            <div class="form-group">
-                <label for="editPhone">手机号</label>
-                <input type="tel" id="editPhone" name="phone" required pattern="\d{11}">
-            </div>
-            <div class="form-group">
-                <label for="editAddress">住址</label>
-                <input type="text" id="editAddress" name="address" required>
-            </div>
-            <div class="form-actions">
-                <button type="button" class="btn" onclick="document.getElementById('editModal').style.display='none'">取消</button>
-                <button type="submit" class="btn btn-edit">更新</button>
-            </div>
-        </form>
+    <!-- 添加员工模态框 -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('addModal').style.display='none'">&times;</span>
+            <h2>添加新员工</h2>
+
+            <form action="StaffServlet" method="post">
+                <input type="hidden" name="action" value="add">
+                <div class="form-group">
+                    <label for="addName">姓名</label>
+                    <input type="text" id="addName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="addDepartment">部门</label>
+                    <input type="text" id="addDepartment" name="department" required>
+                </div>
+                <div class="form-group">
+                    <label for="addPosition">岗位</label>
+                    <input type="text" id="addPosition" name="position" required>
+                </div>
+                <div class="form-group">
+                    <label for="addPosition">工号</label>
+                    <input type="text" id="addStaffCode" name="staffCode" required>
+                </div>
+                <div class="form-group">
+                    <label for="addIdNumber">身份证号</label>
+                    <input type="text" id="addIdNumber" name="idNumber" required pattern="\d{18}">
+                </div>
+                <div class="form-group">
+                    <label for="addPhone">手机号</label>
+                    <input type="tel" id="addPhone" name="phone" required pattern="\d{11}">
+                </div>
+                <div class="form-group">
+                    <label for="addAddress">住址</label>
+                    <input type="text" id="addAddress" name="address" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" onclick="document.getElementById('addModal').style.display='none'">取消</button>
+                    <button type="submit" class="btn btn-edit">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 编辑员工模态框 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('editModal').style.display='none'">&times;</span>
+            <h2>编辑员工信息</h2>
+            <form action="StaffServlet" method="post">
+                <input type="hidden" name="action" value="update">
+                <input type="hidden" id="editStaffCode" name="staffCode">
+                <div class="form-group">
+                    <label for="editName">姓名</label>
+                    <input type="text" id="editName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="editDepartment">部门</label>
+                    <input type="text" id="editDepartment" name="department" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPosition">岗位</label>
+                    <input type="text" id="editPosition" name="position" required>
+                </div>
+                <div class="form-group">
+                    <label for="editIdNumber">身份证号</label>
+                    <input type="text" id="editIdNumber" name="idNumber" required pattern="\d{18}">
+                </div>
+                <div class="form-group">
+                    <label for="editPhone">手机号</label>
+                    <input type="tel" id="editPhone" name="phone" required pattern="\d{11}">
+                </div>
+                <div class="form-group">
+                    <label for="editAddress">住址</label>
+                    <input type="text" id="editAddress" name="address" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" onclick="document.getElementById('editModal').style.display='none'">取消</button>
+                    <button type="submit" class="btn btn-edit">更新</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 </body>
@@ -176,11 +178,7 @@
 </script>
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        background-color: #f5f5f5;
-    }
+
     .container {
         max-width: 1200px;
         margin: 0 auto;
@@ -282,5 +280,8 @@
     .form-actions {
         text-align: right;
         margin-top: 20px;
+    }
+    .sidebar-button:nth-child(2){
+        background-color: #1ABC9C;
     }
 </style>
