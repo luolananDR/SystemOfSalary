@@ -20,5 +20,4 @@ public class FamilyMember {
    //private Boolean isRenting;        // 是否租房
     private Boolean isMajorDisease;   // 是否患重大疾病
     private Timestamp createdAt;      // 创建时间
-    private Timestamp updatedAt;      // 更新时间
 }

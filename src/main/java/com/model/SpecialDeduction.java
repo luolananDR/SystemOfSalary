@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 public class SpecialDeduction {
     private Integer id;                           // 主键ID
     private Integer staffCode;                    // 员工编号（关联员工信息）
-
     private BigDecimal childEducation;            // 子女教育
     private BigDecimal continueEducation;         // 继续教育
     private BigDecimal housingLoanInterest;       // 住房贷款利息
