@@ -3,10 +3,7 @@ package com.dao;
 import com.filter.SensitiveDataEncryptFilter;
 import com.model.Staff;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,6 +138,49 @@ public class StaffDao extends BaseDao{
         }
         return staff;
     }
+    public int getTotalStaffCount() {
+        int count = 0;
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM staff")) {
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
 
+    // 分页查询员工
+    public List<Staff> getStaffByPage(int offset, int limit) {
+        List<Staff> staffList = new ArrayList<>();
+        String sql = "SELECT * FROM staff LIMIT ? OFFSET ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, limit);
+            pstmt.setInt(2, offset);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Staff staff = new Staff();
+                    // 设置staff对象的各个属性
+                    staff.setStaffCode(rs.getString("staff_code"));
+                    staff.setName(rs.getString("name"));
+                    staff.setDepartmentId(rs.getInt("department_id"));
+                    staff.setPosition(rs.getString("position"));
+                    staff.setIdNumber(SensitiveDataEncryptFilter.decryptSM4(rs.getString("id_number")));
+                    staff.setPhone(SensitiveDataEncryptFilter.decryptSM4(rs.getString("phone")));
+                    staff.setAddress(SensitiveDataEncryptFilter.decryptSM4(rs.getString("address")));
+
+                    staffList.add(staff);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return staffList;
+    }
 
 }

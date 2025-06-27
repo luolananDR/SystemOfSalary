@@ -21,6 +21,23 @@
     <div class="container">
         <h1>员工管理</h1>
         <button class="btn btn-add" onclick="document.getElementById('addModal').style.display='block'">添加新员工</button>
+
+        <%
+            List<Staff> staffList = (List<Staff>) request.getAttribute("staffList");
+            int totalStaff = staffList != null ? staffList.size() : 0;
+            int itemsPerPage = 7;
+            int currentPage = (int) request.getAttribute("currentPage");
+            int totalPages = (int) request.getAttribute("totalPages");
+            // 计算当前页的开始和结束索引
+            int startIndex = 0;
+            int endIndex = Math.min(startIndex + itemsPerPage, totalStaff);
+
+            System.out.println(currentPage);
+            System.out.println(totalStaff);
+            System.out.println(startIndex);
+            System.out.println(endIndex);
+        %>
+
         <table>
             <thead>
             <tr>
@@ -36,10 +53,9 @@
             </thead>
             <tbody>
             <%
-                List<Staff> staffList = (List<Staff>) request.getAttribute("staffList");
-
                 if (staffList != null && !staffList.isEmpty()) {
-                    for (Staff staff : staffList) {
+                    for (int i = startIndex; i < endIndex; i++) {
+                        Staff staff = staffList.get(i);
             %>
             <tr>
                 <td><%= staff.getStaffCode() %></td>
@@ -69,6 +85,34 @@
             <% } %>
             </tbody>
         </table>
+
+        <%-- 分页导航 --%>
+        <div class="pagination">
+            <% if (totalPages > 1) { %>
+            <%-- 上一页按钮 --%>
+            <% if (currentPage > 1) { %>
+            <a href="StaffServlet?action=list&page=<%= currentPage - 1 %>" class="page-link">&laquo; 上一页</a>
+            <% } else { %>
+            <span class="page-link disabled">&laquo; 上一页</span>
+            <% } %>
+
+            <%-- 页码数字 --%>
+            <% for (int i = 1; i <= totalPages; i++) { %>
+            <% if (i == currentPage) { %>
+            <span class="page-link current"><%= i %></span>
+            <% } else { %>
+            <a href="StaffServlet?action=list&page=<%= i %>" class="page-link"><%= i %></a>
+            <% } %>
+            <% } %>
+
+            <%-- 下一页按钮 --%>
+            <% if (currentPage < totalPages) { %>
+            <a href="StaffServlet?action=list&page=<%= currentPage + 1 %>" class="page-link">下一页 &raquo;</a>
+            <% } else { %>
+            <span class="page-link disabled">下一页 &raquo;</span>
+            <% } %>
+            <% } %>
+        </div>
     </div>
 
     <!-- 添加员工模态框 -->
@@ -178,7 +222,6 @@
 </script>
 
 <style>
-
     .container {
         max-width: 1200px;
         margin: 0 auto;
@@ -283,5 +326,33 @@
     }
     .sidebar-button:nth-child(2){
         background-color: #1ABC9C;
+    }
+
+    /* 分页样式 */
+    .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+    }
+    .page-link {
+        padding: 5px 10px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        text-decoration: none;
+        color: #333;
+    }
+    .page-link:hover {
+        background-color: #f2f2f2;
+    }
+    .page-link.current {
+        background-color: #4CAF50;
+        color: white;
+        border-color: #4CAF50;
+    }
+    .page-link.disabled {
+        color: #aaa;
+        cursor: not-allowed;
     }
 </style>

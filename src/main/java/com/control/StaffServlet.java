@@ -18,12 +18,47 @@ public class StaffServlet extends HttpServlet {
     private StaffDao staffDao = new StaffDao();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 显示所有员工
-        AuditLogFilter.log(request, "查询", "员工信息", "成功", "通过过滤器记录");
-        List<Staff> staffList = staffDao.getAllStaff();
-        request.setAttribute("staffList", staffList);
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/staffManage.jsp");
-        rd.forward(request, response);
+        String action = request.getParameter("action");
+
+        if ("list".equals(action)) {
+            // 显示员工列表（带分页）
+            AuditLogFilter.log(request, "查询", "员工信息", "成功", "通过过滤器记录");
+
+            // 获取分页参数
+            int page = 1;
+            int recordsPerPage = 7; // 每页显示7条记录
+
+            try {
+                page = Integer.parseInt(request.getParameter("page"));
+            } catch (NumberFormatException e) {
+                // 使用默认值
+            }
+
+            // 获取总记录数
+            int totalRecords = staffDao.getTotalStaffCount();
+
+            // 计算总页数
+            int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
+
+            // 确保当前页在有效范围内
+            if (page < 1) page = 1;
+            if (page > totalPages && totalPages > 0) page = totalPages;
+
+            // 获取当前页的员工列表
+            List<Staff> staffList = staffDao.getStaffByPage((page - 1) * recordsPerPage, recordsPerPage);
+
+            // 设置请求属性
+            request.setAttribute("staffList", staffList);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("totalRecords", totalRecords);
+
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/staffManage.jsp");
+            rd.forward(request, response);
+        } else {
+            // 其他GET请求处理（如果有）
+            response.sendRedirect("staffManage.jsp");
+        }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -63,6 +98,6 @@ public class StaffServlet extends HttpServlet {
             staffDao.deleteStaff(staffId);
         }
 
-        response.sendRedirect("StaffServlet");
+        response.sendRedirect("StaffServlet?action=list");
     }
 }
